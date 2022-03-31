@@ -1,5 +1,7 @@
 package ru.blinov.control.inventory.entity;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,11 +21,15 @@ public class InventoryCard {
 	@Column(name="id")
 	private int id;
 	
+	@Column(name="identifier")
+	private String identifier;
+	
 	@Column(name="class")
 	private String className;
 	
-	@Column(name="created_at")
-	private String createdAt;
+	@Column(name="created_at",
+	    	columnDefinition="TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP")
+	private Date createdAt = new Date();
 	
 	@Column(name="status")
 	private String status;
@@ -60,9 +66,10 @@ public class InventoryCard {
 		
 	}
 
-	public InventoryCard(String className, String createdAt, String status, User user, String productId,
+	public InventoryCard(String identifier, String className, Date createdAt, String status, User user, String productId,
 			String productName, String productType, String productImage, String productManufacturer,
 			String productCountry, String productDescription) {
+		this.identifier = identifier;
 		this.className = className;
 		this.createdAt = createdAt;
 		this.status = status;
@@ -83,6 +90,14 @@ public class InventoryCard {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
+	}
 
 	public String getClassName() {
 		return className;
@@ -92,11 +107,11 @@ public class InventoryCard {
 		this.className = className;
 	}
 
-	public String getCreatedAt() {
+	public Date getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(String createdAt) {
+	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
 

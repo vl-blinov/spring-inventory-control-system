@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.blinov.control.inventory.dao.InventoryCardRepository;
+import ru.blinov.control.inventory.dao.projection.InventoryCardIdentifier;
 import ru.blinov.control.inventory.entity.InventoryCard;
 
 @Service
@@ -42,14 +43,33 @@ public class InventoryCardServiceImpl implements InventoryCardService {
 	public void save(InventoryCard inventoryCard) {
 		
 		inventoryCardRepository.save(inventoryCard);
-
 	}
 
 	@Override
-	public void deleteBuId(int id) {
+	public void deleteById(int id) {
 		
 		inventoryCardRepository.deleteById(id);
-
 	}
 
+	@Override
+	public List<InventoryCardIdentifier> findAllIdentifiers() {
+		
+		List<InventoryCardIdentifier> identifiers = inventoryCardRepository.findAllBy();
+		
+		return identifiers;
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

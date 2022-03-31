@@ -1,5 +1,6 @@
 package ru.blinov.control.inventory.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -171,5 +172,14 @@ public class User {
 		this.inventoryCards = inventoryCards;
 	}
 	
-	
+	public void addInventoryCard(InventoryCard inventoryCard) {
+		
+		if(inventoryCards == null) {
+			inventoryCards = new ArrayList<>();
+		}
+		
+		inventoryCards.add(inventoryCard);
+		
+		inventoryCard.setUser(this);
+	}
 }

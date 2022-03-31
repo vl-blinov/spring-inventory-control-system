@@ -1,23 +1,77 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 	<head>
-    	<meta charset="utf-8">
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-    	<!-- Bootstrap CSS -->
-    	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" 
-    			rel="stylesheet" 
-    			integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" 
-    			crossorigin="anonymous">
+	    <!-- Required meta tags -->
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	    <!-- Bootstrap CSS -->
+	    <link rel="stylesheet" 
+			    href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
+			    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
+			    crossorigin="anonymous">
+		<style>
+			.table-font-size{font-size: 14px;}
+		</style>
 		<title>Catalogue</title>
 	</head>
 	<body>
+	    <!-- Optional JavaScript -->
+   		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" 
+			    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" 
+			    crossorigin="anonymous">
+	    </script>
+    	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" 
+		    	integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" 
+		    	crossorigin="anonymous">
+    	</script>
+    	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" 
+		    	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" 
+		    	crossorigin="anonymous">
+    	</script>
+		<!-- Modal -->
+		<div class="modal fade" id="addCardModal" tabindex="-1" role="dialog" aria-labelledby="addCardModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="addCardModalLabel">New inventory card</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <form action="#" th:action="@{/amics/save}" th:object="${inventoryCard}" method="POST">
+			      <div class="modal-body">
+						<input type="text" th:field="*{productName}" class="form-control mb-4 col-4" placeholder="Name">
+						<input type="text" th:field="*{productType}" class="form-control mb-4 col-4" placeholder="Type">
+						<input type="text" th:field="*{productId}" class="form-control mb-4 col-4" placeholder="Product ID">
+						<input type="text" th:field="*{productManufacturer}" class="form-control mb-4 col-4" placeholder="Manufacturer">	
+						<input type="text" th:field="*{productCountry}" class="form-control mb-4 col-4" placeholder="Country">			
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			        <button type="submit" class="btn btn-primary">Save</button>
+			      </div>
+		      </form>
+		      
+		    </div>
+		  </div>
+		</div>
 		<div class="container">
+			<!-- Catalogue -->
 			<h3>Catalogue</h3>
 			<hr>
-			<table class="table table-bordered table-striped">
+			<!-- Button trigger modal -->
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCardModal">
+				Add card
+			</button>
+			<br></br>
+			<!-- Table -->
+			<table class="table table-bordered table-striped table-font-size">
 				<thead class="thead table-dark">
-					<tr>
+					<tr class="text-center">
+						<th>Use</th>
 						<th>Image</th>
+						<th>Identifier</th>
 						<th>Name</th>
 						<th>Type</th>
 						<th>Product ID</th>
@@ -27,7 +81,21 @@
 				</thead>
 				<tbody>
 					<tr th:each="inventoryCard : ${inventoryCards}">
+						<td class="text-center">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+								<label class="form-check-label" for="flexCheckDefault"></label>
+							</div>
+							<div>  				
+								<a th:href="@{/amics/delete(inventoryCardId=${inventoryCard.id})}"
+								   class="btn btn-danger btn-sm"
+								   onclick="if (!(confirm('Delete this card?'))) return false">
+									Delete
+								</a>
+							</div>
+						</td>
 						<td th:text="${inventoryCard.productImage}"/>
+						<td th:text="${inventoryCard.identifier}"/>
 						<td th:text="${inventoryCard.productName}"/>
 						<td th:text="${inventoryCard.productType}"/>
 						<td th:text="${inventoryCard.productId}"/>
@@ -36,6 +104,9 @@
 					</tr>
 				</tbody>
 			</table>
+			<form action="#" th:action="@{/logout}" method="POST">
+				<input type="submit" value="Logout" class="btn btn-outline-primary mt-2"/>
+			</form>
 		</div>
 	</body>
 </html>
