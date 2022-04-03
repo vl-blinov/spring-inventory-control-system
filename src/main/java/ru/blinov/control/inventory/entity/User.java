@@ -178,8 +178,7 @@ public class User {
 			inventoryCards = new ArrayList<>();
 		}
 		
-		inventoryCards.add(inventoryCard);
-		
+		inventoryCards.add(inventoryCard);	
 		inventoryCard.setUser(this);
 	}
 }

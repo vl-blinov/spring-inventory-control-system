@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.blinov.control.inventory.dao.InventoryCardRepository;
-import ru.blinov.control.inventory.dao.projection.InventoryCardIdentifier;
 import ru.blinov.control.inventory.entity.InventoryCard;
 
 @Service
@@ -52,11 +51,11 @@ public class InventoryCardServiceImpl implements InventoryCardService {
 	}
 
 	@Override
-	public List<InventoryCardIdentifier> findAllIdentifiers() {
+	public Boolean existsByIdentifier(String identifier) {
 		
-		List<InventoryCardIdentifier> identifiers = inventoryCardRepository.findAllBy();
+		Boolean identifierIsExist = inventoryCardRepository.existsByIdentifier(identifier);
 		
-		return identifiers;
+		return identifierIsExist;
 	}
 	
 }

@@ -17,8 +17,8 @@ public class InventoryWebMvcConfig implements WebMvcConfigurer {
 		
 		String inventoryCardUploadPath = inventoryCardUploadDirectory.toFile().getAbsolutePath();
 		
-		registry.addResourceHandler("/src/main/resources/static/images/products/**").
-				addResourceLocations("file:/" + inventoryCardUploadPath + "/");
+		registry.addResourceHandler("/src/main/resources/static/images/products/**")
+				.addResourceLocations("file:/" + inventoryCardUploadPath + "/");
 	}
 	
 }

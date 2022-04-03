@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 @Entity
 @Table(name="inventory_cards")
 public class InventoryCard {
@@ -36,9 +38,9 @@ public class InventoryCard {
 	private String status;
 	
 	@ManyToOne(cascade= {CascadeType.DETACH,
-			CascadeType.MERGE,
-			CascadeType.PERSIST,
-			CascadeType.REFRESH})
+						 CascadeType.MERGE,
+						 CascadeType.PERSIST,
+						 CascadeType.REFRESH})
 	@JoinColumn(name="user_id")
 	private User user;
 	
@@ -80,9 +82,9 @@ public class InventoryCard {
 	}
 
 	public InventoryCard(int id, String identifier, String className, Date createdAt, String status, User user,
-			String productId, String productName, String productType, String productImage, String productManufacturer,
-			String productCountry, String productLength, String productWidth, String productHeight,
-			String productWeight, String productDescription) {
+						 String productId, String productName, String productType, String productImage, String productManufacturer,
+						 String productCountry, String productLength, String productWidth, String productHeight,
+						 String productWeight, String productDescription) {
 		this.id = id;
 		this.identifier = identifier;
 		this.className = className;
@@ -246,6 +248,17 @@ public class InventoryCard {
 		}
 		
 		return "/src/main/resources/static/images/products/" + identifier + "/" + productImage;	
+	}
+	
+	public String generateIdentifier() {
+		
+		String part1 = RandomStringUtils.randomNumeric(2);
+		String part2 = RandomStringUtils.randomNumeric(5);
+		String part3 = RandomStringUtils.randomNumeric(3);
+		
+		String identifier = part1.concat("h").concat(part2).concat("e").concat(part3);
+		
+		return identifier;
 	}
 
 }

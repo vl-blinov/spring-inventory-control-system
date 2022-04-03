@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import ru.blinov.control.inventory.dao.projection.InventoryCardIdentifier;
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.service.InventoryCardService;
 
@@ -36,11 +35,9 @@ public class InventoryCardController {
 	public String listInventoryCards(Model model) {
 		
 		List<InventoryCard> inventoryCards = inventoryCardService.findAll();
-		
 		InventoryCard inventoryCard = new InventoryCard();
 		
-		model.addAttribute("inventoryCards", inventoryCards);
-		
+		model.addAttribute("inventoryCards", inventoryCards);	
 		model.addAttribute("inventoryCard", inventoryCard);
 		
 		return "/inventory/catalogue";
@@ -54,24 +51,20 @@ public class InventoryCardController {
 //		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //		String currentPrincipalName = authentication.getName();
 		
-		List<InventoryCardIdentifier> identifiers = inventoryCardService.findAllIdentifiers();
+		String identifier = inventoryCard.generateIdentifier();
 		
-		String identifier = generateIdentifier();
-
-		for(int i = 0; i < identifiers.size(); i++) {
-			if(!identifiers.get(i).getIdentifier().equals(identifier)) {
-				continue;
+		while(true) {
+			if(inventoryCardService.existsByIdentifier(identifier)) {
+				identifier = inventoryCard.generateIdentifier();;
 			}
 			else {
-				identifier = generateIdentifier();
-				i = -1;
+				break;
 			}
 		}
 		
 		inventoryCard.setIdentifier(identifier);
 		
 		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-		
 		inventoryCard.setProductImage(fileName);
 		
 		inventoryCardService.save(inventoryCard);
@@ -83,9 +76,7 @@ public class InventoryCardController {
 		}
 		
 		InputStream inputStream = multipartFile.getInputStream();
-
-		Path filePath = uploadPath.resolve(fileName);
-			
+		Path filePath = uploadPath.resolve(fileName);	
 		Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);	
 
 		return "redirect:/amics/catalogue";
@@ -93,8 +84,8 @@ public class InventoryCardController {
 	
 	@GetMapping("/delete")
 	public String delete(@RequestParam("inventoryCardId") int id, 
-						@RequestParam("inventoryCardIdentifier") String identifier,
-						@RequestParam("inventoryCardProductImage") String productImage) throws IOException {
+						 @RequestParam("inventoryCardIdentifier") String identifier,
+						 @RequestParam("inventoryCardProductImage") String productImage) throws IOException {
 		
 		inventoryCardService.deleteById(id);
 		
@@ -105,17 +96,6 @@ public class InventoryCardController {
 		Files.delete(deleteFileFolder);
 
 		return "redirect:/amics/catalogue";
-	}
-	
-	public static String generateIdentifier() {
-		
-		String part1 = RandomStringUtils.randomNumeric(2);
-		String part2 = RandomStringUtils.randomNumeric(5);
-		String part3 = RandomStringUtils.randomNumeric(3);
-		
-		String identifier = part1.concat("h").concat(part2).concat("e").concat(part3);
-		
-		return identifier;
 	}
 	
 }
