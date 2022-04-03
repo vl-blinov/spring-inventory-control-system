@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="inventory_cards")
@@ -59,6 +60,18 @@ public class InventoryCard {
 	@Column(name="product_country")
 	private String productCountry;
 	
+	@Column(name="product_length")
+	private String productLength;
+	
+	@Column(name="product_width")
+	private String productWidth;
+	
+	@Column(name="product_height")
+	private String productHeight;
+	
+	@Column(name="product_weight")
+	private String productWeight;
+	
 	@Column(name="product_description")
 	private String productDescription;
 	
@@ -66,9 +79,11 @@ public class InventoryCard {
 		
 	}
 
-	public InventoryCard(String identifier, String className, Date createdAt, String status, User user, String productId,
-			String productName, String productType, String productImage, String productManufacturer,
-			String productCountry, String productDescription) {
+	public InventoryCard(int id, String identifier, String className, Date createdAt, String status, User user,
+			String productId, String productName, String productType, String productImage, String productManufacturer,
+			String productCountry, String productLength, String productWidth, String productHeight,
+			String productWeight, String productDescription) {
+		this.id = id;
 		this.identifier = identifier;
 		this.className = className;
 		this.createdAt = createdAt;
@@ -80,6 +95,10 @@ public class InventoryCard {
 		this.productImage = productImage;
 		this.productManufacturer = productManufacturer;
 		this.productCountry = productCountry;
+		this.productLength = productLength;
+		this.productWidth = productWidth;
+		this.productHeight = productHeight;
+		this.productWeight = productWeight;
 		this.productDescription = productDescription;
 	}
 
@@ -179,12 +198,54 @@ public class InventoryCard {
 		this.productCountry = productCountry;
 	}
 
+	public String getProductLength() {
+		return productLength;
+	}
+
+	public void setProductLength(String productLength) {
+		this.productLength = productLength;
+	}
+
+	public String getProductWidth() {
+		return productWidth;
+	}
+
+	public void setProductWidth(String productWidth) {
+		this.productWidth = productWidth;
+	}
+
+	public String getProductHeight() {
+		return productHeight;
+	}
+
+	public void setProductHeight(String productHeight) {
+		this.productHeight = productHeight;
+	}
+
+	public String getProductWeight() {
+		return productWeight;
+	}
+
+	public void setProductWeight(String productWeight) {
+		this.productWeight = productWeight;
+	}
+
 	public String getProductDescription() {
 		return productDescription;
 	}
 
 	public void setProductDescription(String productDescription) {
 		this.productDescription = productDescription;
+	}
+	
+	@Transient
+	public String getProductImagePath() {
+		
+		if(productImage == null || identifier == null) {
+			return null;
+		}
+		
+		return "/src/main/resources/static/images/products/" + identifier + "/" + productImage;	
 	}
 
 }

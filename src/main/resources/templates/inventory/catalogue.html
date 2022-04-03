@@ -3,14 +3,17 @@
 	<head>
 	    <!-- Required meta tags -->
 	    <meta charset="utf-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
 	    <!-- Bootstrap CSS -->
 	    <link rel="stylesheet" 
 			    href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
 			    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
 			    crossorigin="anonymous">
 		<style>
-			.table-font-size{font-size: 14px;}
+			.table-font-size {font-size: 14px;}
+			.thumbnail-size {width: 255px; height: 186px; overflow: hidden; margin: auto;}
+			.textarea {resize: none;}
+			.image-size {width: 144px; height: 105px; overflow: hidden; margin: auto;}
 		</style>
 		<title>Catalogue</title>
 	</head>
@@ -29,6 +32,22 @@
 		    	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" 
 		    	crossorigin="anonymous">
     	</script>
+    	<script type="text/javascript">
+    		$(document).ready(function() {
+    			$('#fileImage').change(function() {
+    				showImageThumbnail(this)
+    			});
+    		});	
+    		function showImageThumbnail(fileInput) {
+    			file = fileInput.files[0];
+    			reader = new FileReader();
+    			reader.onload = function(e) {
+    				$('#thumbnail').attr('src', e.target.result);
+    			};
+    			reader.readAsDataURL(file);
+    		}
+    	</script>
+
 		<!-- Modal -->
 		<div class="modal fade" id="addCardModal" tabindex="-1" role="dialog" aria-labelledby="addCardModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -39,30 +58,57 @@
 		          <span aria-hidden="true">&times;</span>
 		        </button>
 		      </div>
-		      <form action="#" th:action="@{/amics/save}" th:object="${inventoryCard}" method="POST">
-			      <div class="modal-body">
-						<input type="text" th:field="*{productName}" class="form-control mb-4 col-4" placeholder="Name">
-						<input type="text" th:field="*{productType}" class="form-control mb-4 col-4" placeholder="Type">
-						<input type="text" th:field="*{productId}" class="form-control mb-4 col-4" placeholder="Product ID">
-						<input type="text" th:field="*{productManufacturer}" class="form-control mb-4 col-4" placeholder="Manufacturer">	
-						<input type="text" th:field="*{productCountry}" class="form-control mb-4 col-4" placeholder="Country">			
+		      <form action="#" th:action="@{/amics/save}" th:object="${inventoryCard}" method="POST" enctype="multipart/form-data">
+			      <div class="modal-body">	
+			      	<div class="container">
+			      		<div class="row">
+			      			<div class="col">
+					      		<p>
+									<img id="thumbnail" class="img-thumbnail thumbnail-size">
+								</p>
+								<input type="file" name="fileImage" id="fileImage" accept="image/png, image/jpeg"/>		
+								<br><br>
+			      			</div>
+			      			<div class="col">
+			      				<input type="text" th:field="*{productLength}" class="form-control mb-4 col-4" placeholder="Length">
+								<input type="text" th:field="*{productWidth}" class="form-control mb-4 col-4" placeholder="Width">
+								<input type="text" th:field="*{productHeight}" class="form-control mb-4 col-4" placeholder="Height">
+								<input type="text" th:field="*{productWeight}" class="form-control mb-4 col-4" placeholder="Weight">
+			      			</div>
+			      		</div>
+			      		<div class="row">
+			      			<div class="col">
+								<input type="text" th:field="*{productName}" class="form-control mb-4 col-4" placeholder="Name">
+								<input type="text" th:field="*{productType}" class="form-control mb-4 col-4" placeholder="Type">
+								<input type="text" th:field="*{productId}" class="form-control mb-4 col-4" placeholder="Product ID">
+								<input type="text" th:field="*{productManufacturer}" class="form-control mb-4 col-4" placeholder="Manufacturer">	
+								<input type="text" th:field="*{productCountry}" class="form-control mb-4 col-4" placeholder="Country">
+			      			</div>
+			      			<div class="col">
+								<div class="mb-3">
+									<label for="description" class="form-label">Description:</label>
+									<textarea th:field="*{productDescription}" class="form-control textarea" id="description" rows="10"></textarea>	
+								</div>
+			      			</div>
+			      		</div>
+			      	</div>		
 			      </div>
 			      <div class="modal-footer">
 			        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 			        <button type="submit" class="btn btn-primary">Save</button>
 			      </div>
 		      </form>
-		      
 		    </div>
 		  </div>
 		</div>
+
 		<div class="container">
 			<!-- Catalogue -->
 			<h3>Catalogue</h3>
 			<hr>
 			<!-- Button trigger modal -->
 			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCardModal">
-				Add card
+				New card
 			</button>
 			<br></br>
 			<!-- Table -->
@@ -87,14 +133,18 @@
 								<label class="form-check-label" for="flexCheckDefault"></label>
 							</div>
 							<div>  				
-								<a th:href="@{/amics/delete(inventoryCardId=${inventoryCard.id})}"
+								<a th:href="@{/amics/delete(inventoryCardId=${inventoryCard.id}, 
+															inventoryCardIdentifier=${inventoryCard.identifier},
+															inventoryCardProductImage=${inventoryCard.productImage})}"
 								   class="btn btn-danger btn-sm"
 								   onclick="if (!(confirm('Delete this card?'))) return false">
-									Delete
+									X
 								</a>
 							</div>
 						</td>
-						<td th:text="${inventoryCard.productImage}"/>
+						<td>
+							<img th:src="@{${inventoryCard.productImagePath}}" class="image-size mx-auto d-block">
+						</td>
 						<td th:text="${inventoryCard.identifier}"/>
 						<td th:text="${inventoryCard.productName}"/>
 						<td th:text="${inventoryCard.productType}"/>
