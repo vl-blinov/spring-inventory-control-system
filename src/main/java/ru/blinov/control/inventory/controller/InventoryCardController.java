@@ -83,6 +83,12 @@ public class InventoryCardController {
 		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 		inventoryCard.setProductImage(fileName);
 		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication.getName();
+		
+		User user = inventoryCardService.findUserByUsername(username);
+		inventoryCard.setUser(user);
+		
 		inventoryCardService.save(inventoryCard);
 		
 		Path uploadPath = Paths.get("./src/main/resources/static/images/products/" + inventoryCard.getIdentifier());

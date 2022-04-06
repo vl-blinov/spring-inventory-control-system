@@ -71,11 +71,11 @@
     					$('.modal-body #formProductHeight').val(inventoryCard.productHeight);
     					$('.modal-body #formProductWeight').val(inventoryCard.productWeight);
     					$('.modal-body #productDescription').val(inventoryCard.productDescription);
-    					$('.modal-footer #formCreatedAt').val(inventoryCard.createdAt);
     					$('.modal-footer #formFullName').val(inventoryCard.user.fullName);
     					$('.modal-footer #formPosition').val(inventoryCard.user.position);
     					$('.modal-footer #formPhone').val(inventoryCard.user.phone);
     					$('.modal-footer #formEmail').val(inventoryCard.user.email);
+    					$('.modal-footer #formCreatedAt').val(inventoryCard.createdAt);
     				});
     				myModal.show();
     			});
@@ -312,25 +312,25 @@
 			        				<div class="d-flex align-items-baseline">
 				        				<label for="formFullName" class="col-sm-2 col-form-label" style="width:70px;">Full name:</label>
 				        				<div class="col-sm">
-				        					<input type="text" th:field="${user.fullName}" readonly class="form-control-plaintext form-control-sm" id="formFullName" disabled/>				
+				        					<input type="text" readonly class="form-control-plaintext form-control-sm" id="formFullName" disabled/>				
 				        				</div>
 			        				</div>
 			        				<div class="d-flex align-items-baseline">
 				        				<label for="formPosition" class="col-sm-2 col-form-label" style="width:70px;">Position:</label>
 				        				<div class="col-sm">
-				        					<input type="text" th:field="${user.position}" readonly class="form-control-plaintext form-control-sm" id="formPosition" disabled/>				
+				        					<input type="text" readonly class="form-control-plaintext form-control-sm" id="formPosition" disabled/>				
 				        				</div>
 			        				</div>
 			        				<div class="d-flex align-items-baseline">
 				        				<label for="formPhone" class="col-sm-2 col-form-label" style="width:70px;">Phone:</label>
 				        				<div class="col-sm">
-				        					<input type="text" th:field="${user.phone}" readonly class="form-control-plaintext form-control-sm" id="formPhone" disabled/>				
+				        					<input type="text" readonly class="form-control-plaintext form-control-sm" id="formPhone" disabled/>				
 				        				</div>
 			        				</div>
 			        				<div class="d-flex align-items-baseline">
 				        				<label for="formEmail" class="col-sm-2 col-form-label" style="width:70px;">Email:</label>
 				        				<div class="col-sm">
-				        					<input type="text" th:field="${user.email}" readonly class="form-control-plaintext form-control-sm" id="formEmail" disabled/>				
+				        					<input type="text" readonly class="form-control-plaintext form-control-sm" id="formEmail" disabled/>				
 				        				</div>
 			        				</div>
 			        				<div class="d-flex align-items-baseline">
