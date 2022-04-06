@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
 @Table(name="users")
 public class User {
@@ -51,6 +54,7 @@ public class User {
 	@Column(name="email")
 	private String email;
 	
+	@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 	@OneToMany(mappedBy="user",
 				cascade= {CascadeType.DETACH,
 						CascadeType.MERGE,
@@ -181,4 +185,19 @@ public class User {
 		inventoryCards.add(inventoryCard);	
 		inventoryCard.setUser(this);
 	}
+	
+	public String getFullName() {
+		return firstName + " " + lastName;
+	}
+
+//	@Override
+//	public String toString() {
+//		return "User [id=" + id + ", username=" + username + ", password=" + password + ", enabled=" + enabled
+//				+ ", authority=" + authority + ", firstName=" + firstName + ", lastName=" + lastName + ", department="
+//				+ department + ", position=" + position + ", phone=" + phone + ", email=" + email + ", inventoryCards="
+//				+ inventoryCards + "]";
+//	}
+	
+	
+
 }

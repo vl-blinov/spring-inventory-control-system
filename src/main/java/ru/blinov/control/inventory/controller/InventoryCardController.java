@@ -10,6 +10,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -24,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.neovisionaries.i18n.CountryCode;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
+import ru.blinov.control.inventory.entity.User;
 import ru.blinov.control.inventory.service.InventoryCardService;
 
 @Controller
@@ -39,29 +42,30 @@ public class InventoryCardController {
 		List<InventoryCard> inventoryCards = inventoryCardService.findAll();
 		InventoryCard inventoryCard = new InventoryCard();
 		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String username = authentication.getName();
+		User user = inventoryCardService.findUserByUsername(username);
+		
 		model.addAttribute("inventoryCards", inventoryCards);	
 		model.addAttribute("inventoryCard", inventoryCard);
 		model.addAttribute("countries", CountryCode.values());
-		
+		model.addAttribute("user", user);
+//		System.out.println(user);
 		return "/inventory/catalogue";
 	}
 	
 	@GetMapping("/view")
 	@ResponseBody
-	public InventoryCard viewInventoryCard(@RequestParam("inventoryCardId") int id, Model model) {
+	public InventoryCard viewInventoryCard(@RequestParam("inventoryCardId") int id) {
 		
 		InventoryCard inventoryCard = inventoryCardService.findById(id);
-		
+//		System.out.println(inventoryCard);
 		return inventoryCard;
 	}
 	
 	@PostMapping("/save")
 	public String saveInventoryCard(@ModelAttribute("inventoryCard") InventoryCard inventoryCard,
 									@RequestParam("fileImage") MultipartFile multipartFile) throws IOException {
-		
-//		//?????
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		String currentPrincipalName = authentication.getName();
 		
 		String identifier = inventoryCard.generateIdentifier();
 		

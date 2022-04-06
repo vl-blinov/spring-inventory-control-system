@@ -6,5 +6,5 @@ import ru.blinov.control.inventory.entity.InventoryCard;
 
 public interface InventoryCardRepository extends JpaRepository<InventoryCard, Integer> {
 
-	Boolean existsByIdentifier(String identifier);
+	public Boolean existsByIdentifier(String identifier);
 }

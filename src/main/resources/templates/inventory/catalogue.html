@@ -44,7 +44,7 @@
     			file = fileInput.files[0];
     			reader = new FileReader();
     			reader.onload = function(e) {
-    				$('#thumbnail').attr('src', e.target.result);
+    				$('#productImage').attr('src', e.target.result);
     			};
     			reader.readAsDataURL(file);
     		}
@@ -58,7 +58,9 @@
     				var href = $(this).attr('href');
     				var myModal = new bootstrap.Modal(document.getElementById('addCardModal'), {});
     				$.get(href, function(inventoryCard) {
-    					$('.modal-body #thumbnail').attr('src', inventoryCard.productImagePath);
+    					$('.modal-header #formIdentifier').val(inventoryCard.identifier);
+    					$('.modal-header #formClass').val(inventoryCard.className);
+    					$('.modal-body #productImage').attr('src', inventoryCard.productImagePath);
     					$('.modal-body #formProductName').val(inventoryCard.productName);
     					$('.modal-body #formProductType').val(inventoryCard.productType);
     					$('.modal-body #formProductId').val(inventoryCard.productId);
@@ -69,6 +71,11 @@
     					$('.modal-body #formProductHeight').val(inventoryCard.productHeight);
     					$('.modal-body #formProductWeight').val(inventoryCard.productWeight);
     					$('.modal-body #productDescription').val(inventoryCard.productDescription);
+    					$('.modal-footer #formCreatedAt').val(inventoryCard.createdAt);
+    					$('.modal-footer #formFullName').val(inventoryCard.user.fullName);
+    					$('.modal-footer #formPosition').val(inventoryCard.user.position);
+    					$('.modal-footer #formPhone').val(inventoryCard.user.phone);
+    					$('.modal-footer #formEmail').val(inventoryCard.user.email);
     				});
     				myModal.show();
     			});
@@ -143,27 +150,54 @@
 		</div>
 
 		<!-- Card Modal -->
-		<div class="modal fade" id="addCardModal" tabindex="-1" aria-labelledby="addCardModalLabel" aria-hidden="true">
+		<div class="modal fade" data-bs-backdrop="static" id="addCardModal" tabindex="-1" aria-labelledby="addCardModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 	    		<div class="modal-content">
+					
+					<form th:action="@{/amics/save}" th:object="${inventoryCard}" method="POST" enctype="multipart/form-data">
 
-		    		<!-- Modal header -->
-		      		<div class="modal-header">
-		        		<h5 class="modal-title" id="addCardModalLabel">New inventory card</h5>
-		        		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		      		</div>
+			    		<!-- Modal header -->
+			      		<div class="modal-header">
+			        		<div class="container">
+			        			<div class="row justify-content-start">
+				        			<div class="d-flex align-items-baseline">
+					        			<div class="col">
+					        				<h5 class="modal-title" id="addCardModalLabel">New inventory card</h5>
+					        			</div>
+					        			<div class="col text-end">
+					        				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					        			</div>
+					        		</div>
+			        			</div>
+			        			<div class="row" style="font-size: 14px;">
+			        				<div class="d-flex align-items-baseline">
+				        				<label for="formIdentifier" class="col-sm-2 col-form-label card-header-identifier">Identifier:</label>
+				        				<div class="col-sm">
+				        					<input type="text" th:field="*{identifier}" readonly class="form-control-plaintext form-control-sm" id="formIdentifier" disabled/>				
+				        				</div>
+			        				</div>
+			        			</div>
+			        			<div class="row" style="font-size: 14px;">
+			        				<div class="d-flex align-items-baseline">
+				        				<label for="formClass" class="col-sm-2 col-form-label card-header-identifier">Class:</label>
+				        				<div class="col-sm">
+				        					<input type="text" th:field="*{className}" readonly class="form-control-plaintext form-control-sm" id="formClass" disabled/>				
+				        				</div>
+			        				</div>
+			        			</div>
+			        		</div>
+							
+		      			</div>
 
-		      		<form th:action="@{/amics/save}" th:object="${inventoryCard}" method="POST" enctype="multipart/form-data">
-		      		
 		      			<!-- Modal body -->
 			      		<div class="modal-body card-modal-font-size">	
 			      			<div class="container">
 			      				<div class="row">
 			      				
-			      					<!-- Thumbnail -->
+			      					<!-- Image -->
 			      					<div class="col">
 					      				<p>
-											<img id="thumbnail" class="img-thumbnail card-modal-thumbnail-size">
+											<img id="productImage" class="img-thumbnail card-modal-thumbnail-size">
 										</p>
 										<p>
 											<input type="file" class="form-control form-control-sm" name="fileImage" id="fileImage" accept="image/png, image/jpeg"/>		
@@ -173,28 +207,36 @@
 			      					<!-- Length, Width, Height, Weight -->
 					      			<div class="col">				      			
 					      				<div class="mb-3 row">
-					      					<label for="formProductLength" class="col-sm-2 col-form-label">Length:</label>
-					      					<div class="col-sm-10">
-					      						<input type="text" th:field="*{productLength}" class="form-control form-control-sm" id="formProductLength"/>
+					      					<div class="d-flex align-items-baseline">
+					      						<label for="formProductLength" class="col-sm-2 col-form-label">Length:</label>
+					      						<div class="col-sm-10">
+					      							<input type="text" th:field="*{productLength}" class="form-control form-control-sm" id="formProductLength"/>
+					      						</div>
 					      					</div>
 					      				</div>
 					      				<div class="mb-3 row">
-					      					<label for="formProductWidth" class="col-sm-2 col-form-label">Width:</label>
-					      					<div class="col-sm-10">
-					      						<input type="text" th:field="*{productWidth}" class="form-control form-control-sm" id="formProductWidth"/>
-					      					</div>
+						      				<div class="d-flex align-items-baseline">	
+						      					<label for="formProductWidth" class="col-sm-2 col-form-label">Width:</label>
+						      					<div class="col-sm-10">
+						      						<input type="text" th:field="*{productWidth}" class="form-control form-control-sm" id="formProductWidth"/>
+						      					</div>
+						      				</div>	
 					      				</div>
 					      				<div class="mb-3 row">
-					      					<label for="formProductHeight" class="col-sm-2 col-form-label">Height:</label>
-					      					<div class="col-sm-10">
-					      						<input type="text" th:field="*{productHeight}" class="form-control form-control-sm" id="formProductHeight"/>
-					      					</div>
+						      				<div class="d-flex align-items-baseline">
+						      					<label for="formProductHeight" class="col-sm-2 col-form-label">Height:</label>
+						      					<div class="col-sm-10">
+						      						<input type="text" th:field="*{productHeight}" class="form-control form-control-sm" id="formProductHeight"/>
+						      					</div>
+						      				</div>
 					      				</div>
 					      				<div class="mb-3 row">
-					      					<label for="formProductWeight" class="col-sm-2 col-form-label">Weight:</label>
-					      					<div class="col-sm-10">
-					      						<input type="text" th:field="*{productWeight}" class="form-control form-control-sm" id="formProductWeight"/>
-					      					</div>
+						      				<div class="d-flex align-items-baseline">
+						      					<label for="formProductWeight" class="col-sm-2 col-form-label">Weight:</label>
+						      					<div class="col-sm-10">
+						      						<input type="text" th:field="*{productWeight}" class="form-control form-control-sm" id="formProductWeight"/>
+						      					</div>
+						      				</div>	
 					      				</div>
 					      			</div>
 			      				</div>
@@ -203,39 +245,49 @@
 			      					<!-- Name, Type, Product ID, Manufacturer, Country -->
 					      			<div class="col">
 					      				<div class="mb-3 row">
-					      					<label for="formProductName" class="col-sm-2 col-form-label">Name:</label>
-					      					<div class="col-sm-10">
-					      						<input type="text" th:field="*{productName}" class="form-control form-control-sm" id="formProductName"/>
-					      					</div>
+						      				<div class="d-flex align-items-baseline">
+						      					<label for="formProductName" class="col-sm-2 col-form-label">Name:</label>
+						      					<div class="col-sm-10">
+						      						<input type="text" th:field="*{productName}" class="form-control form-control-sm" id="formProductName"/>
+						      					</div>
+						      				</div>	
 					      				</div>
 					      				<div class="mb-3 row">
-					      					<label for="formProductType" class="col-sm-2 col-form-label">Type:</label>
-					      					<div class="col-sm-10">
-					      						<input type="text" th:field="*{productType}" class="form-control form-control-sm" id="formProductType"/>
-					      					</div>
+						      				<div class="d-flex align-items-baseline">
+						      					<label for="formProductType" class="col-sm-2 col-form-label">Type:</label>
+						      					<div class="col-sm-10">
+						      						<input type="text" th:field="*{productType}" class="form-control form-control-sm" id="formProductType"/>
+						      					</div>
+						      				</div>	
 					      				</div>
 					      				<div class="mb-3 row">
-					      					<label for="formProductId" class="col-sm-3 col-form-label">Product ID:</label>
-					      					<div class="col-sm-9 ms-auto">
-					      						<input type="text" th:field="*{productId}" class="form-control form-control-sm" id="formProductId"/>
-					      					</div>
+						      				<div class="d-flex align-items-baseline">
+						      					<label for="formProductId" class="col-sm-3 col-form-label">Product ID:</label>
+						      					<div class="col-sm-9 ms-auto" style="width:265px;">
+						      						<input type="text" th:field="*{productId}" class="form-control form-control-sm" id="formProductId"/>
+						      					</div>
+						      				</div>	
 					      				</div>
 										<div class="mb-3 row">
-					      					<label for="formProductManufacturer" class="col-sm-3 col-form-label">Manufacturer:</label>
-					      					<div class="col-sm-9 ms-auto">
-					      						<input type="text" th:field="*{productManufacturer}" class="form-control form-control-sm" id="formProductManufacturer"/>
-					      					</div>
+											<div class="d-flex align-items-baseline">
+						      					<label for="formProductManufacturer" class="col-sm-3 col-form-label">Manufacturer:</label>
+						      					<div class="col-sm-9 ms-auto" style="width:265px;">
+						      						<input type="text" th:field="*{productManufacturer}" class="form-control form-control-sm" id="formProductManufacturer"/>
+						      					</div>
+						      				</div>	
 					      				</div>
 										<div class="mb-3 row">
-					      					<label for="formProductCountry" class="col-sm-2 col-form-label">Country:</label>
-					      					<div class="col-sm-10">
-					      						<select class="form-select form-select-sm" th:field="*{productCountry}" id="formProductCountry">
-													<option th:each="country : ${countries}"
-															th:text="${country.name}"
-															th:value="${country.name}">
-													</option>
-												</select>
-					      					</div>
+											<div class="d-flex align-items-baseline">
+						      					<label for="formProductCountry" class="col-sm-2 col-form-label">Country:</label>
+						      					<div class="col-sm-10">
+						      						<select class="form-select form-select-sm" th:field="*{productCountry}" id="formProductCountry">
+														<option th:each="country : ${countries}"
+																th:text="${country.name}"
+																th:value="${country.name}">
+														</option>
+													</select>
+						      					</div>
+						      				</div>	
 					      				</div>	
 					      			</div>
 					      			
@@ -254,8 +306,52 @@
 			      		
 			      		<!-- Modal footer -->
 			      		<div class="modal-footer">
-			        		<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-			        		<button type="submit" class="btn btn-primary">Save</button>
+			      		
+				      		<div class="container">
+			        			<div class="row" style="font-size: 14px;">
+			        				<div class="d-flex align-items-baseline">
+				        				<label for="formFullName" class="col-sm-2 col-form-label" style="width:70px;">Full name:</label>
+				        				<div class="col-sm">
+				        					<input type="text" th:field="${user.fullName}" readonly class="form-control-plaintext form-control-sm" id="formFullName" disabled/>				
+				        				</div>
+			        				</div>
+			        				<div class="d-flex align-items-baseline">
+				        				<label for="formPosition" class="col-sm-2 col-form-label" style="width:70px;">Position:</label>
+				        				<div class="col-sm">
+				        					<input type="text" th:field="${user.position}" readonly class="form-control-plaintext form-control-sm" id="formPosition" disabled/>				
+				        				</div>
+			        				</div>
+			        				<div class="d-flex align-items-baseline">
+				        				<label for="formPhone" class="col-sm-2 col-form-label" style="width:70px;">Phone:</label>
+				        				<div class="col-sm">
+				        					<input type="text" th:field="${user.phone}" readonly class="form-control-plaintext form-control-sm" id="formPhone" disabled/>				
+				        				</div>
+			        				</div>
+			        				<div class="d-flex align-items-baseline">
+				        				<label for="formEmail" class="col-sm-2 col-form-label" style="width:70px;">Email:</label>
+				        				<div class="col-sm">
+				        					<input type="text" th:field="${user.email}" readonly class="form-control-plaintext form-control-sm" id="formEmail" disabled/>				
+				        				</div>
+			        				</div>
+			        				<div class="d-flex align-items-baseline">
+				        				<label for="formCreatedAt" class="col-sm-2 col-form-label" style="width:70px;">Created at:</label>
+				        				<div class="col-sm">
+				        					<input type="text" readonly class="form-control-plaintext form-control-sm" id="formCreatedAt" disabled/>				
+				        				</div>
+			        				</div>
+			        			</div>
+				        	</div>
+				        	
+				        	
+			      			<div class="row">
+				        		<div class="d-flex align-items-baseline">
+					        		<div class="col text-end">
+					        			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			        					<button type="submit" class="btn btn-primary">Save</button>
+					        		</div>
+					        	</div>
+			        		</div>
+
 			      		</div>
 			      		
 		      		</form>

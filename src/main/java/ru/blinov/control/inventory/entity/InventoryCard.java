@@ -15,6 +15,10 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
 @Table(name="inventory_cards")
 public class InventoryCard {
@@ -37,6 +41,7 @@ public class InventoryCard {
 	@Column(name="status")
 	private String status;
 	
+	@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 	@ManyToOne(cascade= {CascadeType.DETACH,
 						 CascadeType.MERGE,
 						 CascadeType.PERSIST,
@@ -260,6 +265,20 @@ public class InventoryCard {
 		
 		return identifier;
 	}
+
+	@Override
+	public String toString() {
+		return "InventoryCard [id=" + id + ", identifier=" + identifier + ", className=" + className + ", createdAt="
+				+ createdAt + ", status=" + status + ", user=" + user + ", productId=" + productId + ", productName="
+				+ productName + ", productType=" + productType + ", productImage=" + productImage
+				+ ", productManufacturer=" + productManufacturer + ", productCountry=" + productCountry
+				+ ", productLength=" + productLength + ", productWidth=" + productWidth + ", productHeight="
+				+ productHeight + ", productWeight=" + productWeight + ", productDescription=" + productDescription
+				+ "]";
+	}
+
+	
+	
 
 }
 

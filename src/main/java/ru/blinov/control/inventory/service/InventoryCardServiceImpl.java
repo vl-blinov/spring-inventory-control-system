@@ -7,13 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.blinov.control.inventory.dao.InventoryCardRepository;
+import ru.blinov.control.inventory.dao.UserRepository;
 import ru.blinov.control.inventory.entity.InventoryCard;
+import ru.blinov.control.inventory.entity.User;
 
 @Service
 public class InventoryCardServiceImpl implements InventoryCardService {
 	
 	@Autowired
 	private InventoryCardRepository inventoryCardRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	@Override
 	public List<InventoryCard> findAll() {
@@ -56,6 +61,14 @@ public class InventoryCardServiceImpl implements InventoryCardService {
 		Boolean identifierIsExist = inventoryCardRepository.existsByIdentifier(identifier);
 		
 		return identifierIsExist;
+	}
+
+	@Override
+	public User findUserByUsername(String username) {
+		
+		User user = userRepository.findByUsername(username);
+		
+		return user;
 	}
 	
 }
