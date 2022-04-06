@@ -1,0 +1,8 @@
+/* Card Model */
+.card-modal-font-size {font-size: 14px;}
+.card-modal-thumbnail-size {width: 255px; height: 186px; overflow: hidden; margin: auto;}
+.card-modal-textarea {resize: none;}
+
+/* Catalogue Table */
+.table-font-size {font-size: 14px;}
+.table-image-size {width: 144px; height: 105px; overflow: hidden; margin: auto;}

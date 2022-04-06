@@ -5,6 +5,7 @@
 	    <!-- Required meta tags -->
 	    <meta charset="utf-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    
 	    <!-- Bootstrap CSS -->
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" 
 			  rel="stylesheet"
@@ -12,17 +13,21 @@
 			  crossorigin="anonymous">
 		
 		<!-- Custom CSS -->
-		<link rel="stylesheet" th:href="@{/css/catalogue-style.css}">
+		<link rel="stylesheet" th:href="@{/css/inventory-style.css}">
 		
 		<title>Catalogue</title>
 	</head>
 	
 	<body>
-   		<!-- jQuery first -->
+   		<!-- jQuery first 
 	    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" 
 			    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" 
 			    crossorigin="anonymous">
-	    </script>
+	    </script> -->
+	    
+	    <!-- jQuery first -->
+	    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	    
     	<!-- Popper.js and Bootstrap JS -->
     	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     			integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
@@ -45,77 +50,44 @@
     		}
     	</script>
     	
-		<!-- Card Modal -->
-		<div class="modal fade" id="addCardModal" tabindex="-1" aria-labelledby="addCardModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-	    		<div class="modal-content">
-		    	
-		    		<!-- Modal header -->
-		      		<div class="modal-header">
-		        		<h5 class="modal-title" id="addCardModalLabel">New inventory card</h5>
-		        			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		      		</div>
-
-		      		<form th:action="@{/amics/save}" th:object="${inventoryCard}" method="POST" enctype="multipart/form-data">
-		      		
-		      			<!-- Modal body -->
-			      		<div class="modal-body">	
-			      			<div class="container">
-			      				<div class="row">
-			      					<div class="col">
-					      				<p>
-											<img id="thumbnail" class="img-thumbnail thumbnail-size">
-										</p>
-										<input type="file" class="form-control form-control-sm" name="fileImage" id="fileImage" accept="image/png, image/jpeg"/>		
-										<br><br>
-			      					</div>
-					      			<div class="col">
-					      				<input type="text" th:field="*{productLength}" class="form-control mb-4 col-4" placeholder="Length">
-										<input type="text" th:field="*{productWidth}" class="form-control mb-4 col-4" placeholder="Width">
-										<input type="text" th:field="*{productHeight}" class="form-control mb-4 col-4" placeholder="Height">
-										<input type="text" th:field="*{productWeight}" class="form-control mb-4 col-4" placeholder="Weight">
-					      			</div>
-			      				</div>
-			      				<div class="row">
-					      			<div class="col">
-										<input type="text" th:field="*{productName}" class="form-control mb-4 col-4" placeholder="Name">
-										<input type="text" th:field="*{productType}" class="form-control mb-4 col-4" placeholder="Type">
-										<input type="text" th:field="*{productId}" class="form-control mb-4 col-4" placeholder="Product ID">
-										<input type="text" th:field="*{productManufacturer}" class="form-control mb-4 col-4" placeholder="Manufacturer">	
-										<input type="text" th:field="*{productCountry}" class="form-control mb-4 col-4" placeholder="Country">
-					      			</div>
-			      					<div class="col">
-										<div class="mb-3">
-											<label for="description" class="form-label">Description:</label>
-											<textarea th:field="*{productDescription}" class="form-control textarea" id="description" rows="10"></textarea>	
-										</div>
-			      					</div>
-								</div>
-			      			</div>		
-			      		</div>
-			      		
-			      		<!-- Modal footer -->
-			      		<div class="modal-footer">
-			        		<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-			        		<button type="submit" class="btn btn-primary">Save</button>
-			      		</div>
-			      		
-		      		</form>
-		    	</div>
-			</div>
-		</div>
-
+    	<!-- View inventory card -->
+    	<script type="text/javascript">
+    		$(document).ready(function() {
+    			$('.view').on('click', function(event) {
+    				event.preventDefault();
+    				var href = $(this).attr('href');
+    				var myModal = new bootstrap.Modal(document.getElementById('addCardModal'), {});
+    				$.get(href, function(inventoryCard) {
+    					$('.modal-body #thumbnail').attr('src', inventoryCard.productImagePath);
+    					$('.modal-body #formProductName').val(inventoryCard.productName);
+    					$('.modal-body #formProductType').val(inventoryCard.productType);
+    					$('.modal-body #formProductId').val(inventoryCard.productId);
+    					$('.modal-body #formProductManufacturer').val(inventoryCard.productManufacturer);
+    					$('.modal-body #formProductCountry').val(inventoryCard.productCountry);
+    					$('.modal-body #formProductLength').val(inventoryCard.productLength);
+    					$('.modal-body #formProductWidth').val(inventoryCard.productWidth);
+    					$('.modal-body #formProductHeight').val(inventoryCard.productHeight);
+    					$('.modal-body #formProductWeight').val(inventoryCard.productWeight);
+    					$('.modal-body #productDescription').val(inventoryCard.productDescription);
+    				});
+    				myModal.show();
+    			});
+    		});
+    	</script>
+    	
 		<!-- Catalogue Main-->
 		<div class="container">
 			<h3>Catalogue</h3>
 			<hr>
+			
 			<!-- Button trigger card modal -->
 			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCardModal">
 				New card
 			</button>
 			<br></br>
+			
 			<!-- Catalogue table -->
-			<table class="table table-bordered table-striped table-font-size">
+			<table class="table table-bordered table-striped table-font-size align-middle">
 			
 				<!-- Table head -->
 				<thead class="thead table-dark">
@@ -132,7 +104,7 @@
 				</thead>
 				
 				<!-- Table body -->
-				<tbody>
+				<tbody >
 					<tr th:each="inventoryCard : ${inventoryCards}">
 						<td class="text-center">
 							<div class="form-check">
@@ -150,9 +122,11 @@
 							</div>
 						</td>
 						<td>
-							<img th:src="@{${inventoryCard.productImagePath}}" class="image-size mx-auto d-block">
+							<img th:src="@{${inventoryCard.productImagePath}}" class="table-image-size mx-auto d-block">
 						</td>
-						<td th:text="${inventoryCard.identifier}"/>
+						<td class="text-center">
+							<a th:text="${inventoryCard.identifier}" th:href="@{/amics/view(inventoryCardId=${inventoryCard.id})}" class="view"></a>
+						</td>
 						<td th:text="${inventoryCard.productName}"/>
 						<td th:text="${inventoryCard.productType}"/>
 						<td th:text="${inventoryCard.productId}"/>
@@ -163,10 +137,131 @@
 			</table>
 			
 			<!-- Button logout -->
-			<form action="#" th:action="@{/logout}" method="POST">
+			<form th:action="@{/logout}" method="POST">
 				<input type="submit" value="Logout" class="btn btn-outline-primary mt-2"/>
-			</form>
-			
+			</form>	
 		</div>
+
+		<!-- Card Modal -->
+		<div class="modal fade" id="addCardModal" tabindex="-1" aria-labelledby="addCardModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+	    		<div class="modal-content">
+
+		    		<!-- Modal header -->
+		      		<div class="modal-header">
+		        		<h5 class="modal-title" id="addCardModalLabel">New inventory card</h5>
+		        		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      		</div>
+
+		      		<form th:action="@{/amics/save}" th:object="${inventoryCard}" method="POST" enctype="multipart/form-data">
+		      		
+		      			<!-- Modal body -->
+			      		<div class="modal-body card-modal-font-size">	
+			      			<div class="container">
+			      				<div class="row">
+			      				
+			      					<!-- Thumbnail -->
+			      					<div class="col">
+					      				<p>
+											<img id="thumbnail" class="img-thumbnail card-modal-thumbnail-size">
+										</p>
+										<p>
+											<input type="file" class="form-control form-control-sm" name="fileImage" id="fileImage" accept="image/png, image/jpeg"/>		
+			      						</p>
+			      					</div>
+			      					
+			      					<!-- Length, Width, Height, Weight -->
+					      			<div class="col">				      			
+					      				<div class="mb-3 row">
+					      					<label for="formProductLength" class="col-sm-2 col-form-label">Length:</label>
+					      					<div class="col-sm-10">
+					      						<input type="text" th:field="*{productLength}" class="form-control form-control-sm" id="formProductLength"/>
+					      					</div>
+					      				</div>
+					      				<div class="mb-3 row">
+					      					<label for="formProductWidth" class="col-sm-2 col-form-label">Width:</label>
+					      					<div class="col-sm-10">
+					      						<input type="text" th:field="*{productWidth}" class="form-control form-control-sm" id="formProductWidth"/>
+					      					</div>
+					      				</div>
+					      				<div class="mb-3 row">
+					      					<label for="formProductHeight" class="col-sm-2 col-form-label">Height:</label>
+					      					<div class="col-sm-10">
+					      						<input type="text" th:field="*{productHeight}" class="form-control form-control-sm" id="formProductHeight"/>
+					      					</div>
+					      				</div>
+					      				<div class="mb-3 row">
+					      					<label for="formProductWeight" class="col-sm-2 col-form-label">Weight:</label>
+					      					<div class="col-sm-10">
+					      						<input type="text" th:field="*{productWeight}" class="form-control form-control-sm" id="formProductWeight"/>
+					      					</div>
+					      				</div>
+					      			</div>
+			      				</div>
+			      				<div class="row">
+			      				
+			      					<!-- Name, Type, Product ID, Manufacturer, Country -->
+					      			<div class="col">
+					      				<div class="mb-3 row">
+					      					<label for="formProductName" class="col-sm-2 col-form-label">Name:</label>
+					      					<div class="col-sm-10">
+					      						<input type="text" th:field="*{productName}" class="form-control form-control-sm" id="formProductName"/>
+					      					</div>
+					      				</div>
+					      				<div class="mb-3 row">
+					      					<label for="formProductType" class="col-sm-2 col-form-label">Type:</label>
+					      					<div class="col-sm-10">
+					      						<input type="text" th:field="*{productType}" class="form-control form-control-sm" id="formProductType"/>
+					      					</div>
+					      				</div>
+					      				<div class="mb-3 row">
+					      					<label for="formProductId" class="col-sm-3 col-form-label">Product ID:</label>
+					      					<div class="col-sm-9 ms-auto">
+					      						<input type="text" th:field="*{productId}" class="form-control form-control-sm" id="formProductId"/>
+					      					</div>
+					      				</div>
+										<div class="mb-3 row">
+					      					<label for="formProductManufacturer" class="col-sm-3 col-form-label">Manufacturer:</label>
+					      					<div class="col-sm-9 ms-auto">
+					      						<input type="text" th:field="*{productManufacturer}" class="form-control form-control-sm" id="formProductManufacturer"/>
+					      					</div>
+					      				</div>
+										<div class="mb-3 row">
+					      					<label for="formProductCountry" class="col-sm-2 col-form-label">Country:</label>
+					      					<div class="col-sm-10">
+					      						<select class="form-select form-select-sm" th:field="*{productCountry}" id="formProductCountry">
+													<option th:each="country : ${countries}"
+															th:text="${country.name}"
+															th:value="${country.name}">
+													</option>
+												</select>
+					      					</div>
+					      				</div>	
+					      			</div>
+					      			
+					      			<!-- Description -->
+			      					<div class="col">
+										<div class="mb-3">
+											<label for="productDescription" class="form-label">Description:</label>
+											<textarea th:field="*{productDescription}" class="form-control card-modal-textarea" id="productDescription" rows="8"
+													  placeholder="Characteristics; links to manuals, instructions, catalogues, drawings, etc.">
+											</textarea>	
+										</div>
+			      					</div>
+								</div>
+			      			</div>		
+			      		</div>
+			      		
+			      		<!-- Modal footer -->
+			      		<div class="modal-footer">
+			        		<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			        		<button type="submit" class="btn btn-primary">Save</button>
+			      		</div>
+			      		
+		      		</form>
+		    	</div>
+			</div>
+		</div>
+		
 	</body>
 </html>

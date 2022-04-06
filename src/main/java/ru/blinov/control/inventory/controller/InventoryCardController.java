@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +18,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.neovisionaries.i18n.CountryCode;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.service.InventoryCardService;
@@ -39,8 +41,18 @@ public class InventoryCardController {
 		
 		model.addAttribute("inventoryCards", inventoryCards);	
 		model.addAttribute("inventoryCard", inventoryCard);
+		model.addAttribute("countries", CountryCode.values());
 		
 		return "/inventory/catalogue";
+	}
+	
+	@GetMapping("/view")
+	@ResponseBody
+	public InventoryCard viewInventoryCard(@RequestParam("inventoryCardId") int id, Model model) {
+		
+		InventoryCard inventoryCard = inventoryCardService.findById(id);
+		
+		return inventoryCard;
 	}
 	
 	@PostMapping("/save")
