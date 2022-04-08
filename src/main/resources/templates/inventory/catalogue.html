@@ -36,7 +36,7 @@
     	<!-- Display image in a card modal -->
     	<script type="text/javascript">
     		$(document).ready(function() {
-    			$('#fileImage').change(function() {
+    			$('.modal-body #fileImage').change(function() {
     				showImageThumbnail(this)
     			});
     		});	
@@ -44,7 +44,7 @@
     			file = fileInput.files[0];
     			reader = new FileReader();
     			reader.onload = function(e) {
-    				$('#productImage').attr('src', e.target.result);
+    				$('.modal-body #productImage').prop('src', e.target.result);
     			};
     			reader.readAsDataURL(file);
     		}
@@ -60,7 +60,8 @@
     				$.get(href, function(inventoryCard) {
     					$('.modal-header #formIdentifier').val(inventoryCard.identifier);
     					$('.modal-header #formClass').val(inventoryCard.className);
-    					$('.modal-body #productImage').attr('src', inventoryCard.productImagePath);
+    					$('.modal-body #productImage').prop('src', inventoryCard.productImagePath);
+    					$('.modal-body #imageSrc').val(inventoryCard.productImagePath);
     					$('.modal-body #formProductName').val(inventoryCard.productName);
     					$('.modal-body #formProductType').val(inventoryCard.productType);
     					$('.modal-body #formProductId').val(inventoryCard.productId);
@@ -76,10 +77,40 @@
     					$('.modal-footer #formPhone').val(inventoryCard.user.phone);
     					$('.modal-footer #formEmail').val(inventoryCard.user.email);
     					$('.modal-footer #formCreatedAt').val(inventoryCard.createdAt);
+    					
+    					identifier = $('.modal-header #formIdentifier').val();
+    					var checkedValue = $('.form-check-input:checked').val();
+
+    					if(identifier==checkedValue) {
+    						$('#addCardModal :input').prop('disabled', false);
+        				}
+    					else {
+    						$('#addCardModal :input').prop('disabled', true);
+            				$('.modal-header #closeModal').prop('disabled', false);
+            				$('.modal-footer #closeButton').prop('disabled', false);
+    					}
     				});
     				myModal.show();
     			});
     		});
+    	</script>
+    	
+    	<!-- Reload page -->
+    	<script type="text/javascript">
+	    	$(document).ready(function() {	
+	    		/*let template = null;
+	    	    $('.modal').on('show.bs.modal', function(event) {
+	    	      template = $(this).html();
+	    	    });
+				$('.modal').on('hidden.bs.modal', function(e) {
+					$(this).html(template);
+					$('#addCardModal :input').prop('disabled', false);
+				});*/
+				
+				$('#addCardModal').on('hidden.bs.modal', function () {
+				     location.reload();
+				});
+			});	
     	</script>
     	
 		<!-- Catalogue Main-->
@@ -111,12 +142,11 @@
 				</thead>
 				
 				<!-- Table body -->
-				<tbody >
+				<tbody>
 					<tr th:each="inventoryCard : ${inventoryCards}">
 						<td class="text-center">
 							<div class="form-check">
-								<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-								<label class="form-check-label" for="flexCheckDefault"></label>
+								<input class="form-check-input" type="checkbox" id="flexCheck" th:value="${inventoryCard.identifier}">
 							</div>
 							<div>  				
 								<a th:href="@{/amics/delete(inventoryCardId=${inventoryCard.id}, 
@@ -165,7 +195,7 @@
 					        				<h5 class="modal-title" id="addCardModalLabel">New inventory card</h5>
 					        			</div>
 					        			<div class="col text-end">
-					        				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					        				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModal"></button>
 					        			</div>
 					        		</div>
 			        			</div>
@@ -173,7 +203,7 @@
 			        				<div class="d-flex align-items-baseline">
 				        				<label for="formIdentifier" class="col-sm-2 col-form-label card-header-identifier">Identifier:</label>
 				        				<div class="col-sm">
-				        					<input type="text" th:field="*{identifier}" readonly class="form-control-plaintext form-control-sm" id="formIdentifier" disabled/>				
+				        					<input type="text" th:field="*{identifier}" class="form-control-plaintext form-control-sm" id="formIdentifier" readonly disabled/>				
 				        				</div>
 			        				</div>
 			        			</div>
@@ -200,8 +230,9 @@
 											<img id="productImage" class="img-thumbnail card-modal-thumbnail-size">
 										</p>
 										<p>
-											<input type="file" class="form-control form-control-sm" name="fileImage" id="fileImage" accept="image/png, image/jpeg"/>		
+											<input type="file" class="form-control form-control-sm" th:name="fileImage" id="fileImage" accept="image/png, image/jpeg"/>		
 			      						</p>
+			      						<input type="hidden" id="imageSrc" th:name="imageSrc"/>
 			      					</div>
 			      					
 			      					<!-- Length, Width, Height, Weight -->
@@ -346,8 +377,8 @@
 			      			<div class="row">
 				        		<div class="d-flex align-items-baseline">
 					        		<div class="col text-end">
-					        			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-			        					<button type="submit" class="btn btn-primary">Save</button>
+					        			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeButton">Close</button>
+			        					<button type="submit" class="btn btn-primary" id="inventoryCardSaveButton">Save</button>
 					        		</div>
 					        	</div>
 			        		</div>

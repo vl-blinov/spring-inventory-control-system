@@ -1,6 +1,7 @@
 package ru.blinov.control.inventory.controller;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -8,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -59,63 +62,107 @@ public class InventoryCardController {
 	public InventoryCard viewInventoryCard(@RequestParam("inventoryCardId") int id) {
 		
 		InventoryCard inventoryCard = inventoryCardService.findById(id);
-//		System.out.println(inventoryCard);
+
 		return inventoryCard;
 	}
 	
 	@PostMapping("/save")
 	public String saveInventoryCard(@ModelAttribute("inventoryCard") InventoryCard inventoryCard,
-									@RequestParam("fileImage") MultipartFile multipartFile) throws IOException {
+									@RequestParam("fileImage") MultipartFile multipartFile,
+									@RequestParam("imageSrc") String imageSrc) throws IOException {
+		
+		String fileName = null;
+		String uploadDirectory;
+		Path sourcePath = null;
+		Path uploadPath;
+		String sourceDirectory = null;
+		
+		//Set User
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		
+		String username = authentication.getName();
+		
+		User user = inventoryCardService.findUserByUsername(username);
+		
+		inventoryCard.setUser(user);
+		
+		//Get image name
+		if(multipartFile.isEmpty()) {
+			Pattern pattern = Pattern.compile("([^\\s/]+(\\.(?i)(png|jpeg|jpg))$)");
+			Matcher matcher = pattern.matcher(imageSrc);
+			matcher.find();
+			fileName = matcher.group();
+			
+			sourceDirectory = "./src/main/resources/static/images/products/" + inventoryCard.getIdentifier() + "/" + fileName;
+			sourcePath = Paths.get(sourceDirectory);
+			
+		}
 		
 		String identifier = inventoryCard.generateIdentifier();
-		
 		while(true) {
 			if(inventoryCardService.existsByIdentifier(identifier)) {
-				identifier = inventoryCard.generateIdentifier();;
+				identifier = inventoryCard.generateIdentifier();
 			}
 			else {
 				break;
 			}
 		}
-		
 		inventoryCard.setIdentifier(identifier);
 		
-		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-		inventoryCard.setProductImage(fileName);
-		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String username = authentication.getName();
-		
-		User user = inventoryCardService.findUserByUsername(username);
-		inventoryCard.setUser(user);
-		
+		if(!multipartFile.isEmpty()) {
+			
+			fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+			inventoryCard.setProductImage(fileName);
+
+			uploadDirectory = "./src/main/resources/static/images/products/" + inventoryCard.getIdentifier();
+			
+			uploadPath = Paths.get(uploadDirectory);
+			
+			if(!Files.exists(uploadPath)) {
+				Files.createDirectories(uploadPath);
+			}
+			
+			InputStream inputStream = multipartFile.getInputStream();
+			Path filePath = uploadPath.resolve(fileName);	
+			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);		
+		}
+		else {
+			
+			inventoryCard.setProductImage(fileName);
+			
+			uploadDirectory = "./src/main/resources/static/images/products/" + identifier;
+			
+			uploadPath = Paths.get(uploadDirectory);
+			
+			if(!Files.exists(uploadPath)) {
+				Files.createDirectories(uploadPath);
+			}
+			
+			File fileToCopy = new File(sourceDirectory);
+			File copiedFile = new File(uploadDirectory + "/" + fileName);
+			
+			Files.copy(fileToCopy.toPath(), copiedFile.toPath());
+		}
+
 		inventoryCardService.save(inventoryCard);
 		
-		Path uploadPath = Paths.get("./src/main/resources/static/images/products/" + inventoryCard.getIdentifier());
-		
-		if(!Files.exists(uploadPath)) {
-			Files.createDirectories(uploadPath);
-		}
-		
-		InputStream inputStream = multipartFile.getInputStream();
-		Path filePath = uploadPath.resolve(fileName);	
-		Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);	
-
 		return "redirect:/amics/catalogue";
 	}
 	
 	@GetMapping("/delete")
 	public String delete(@RequestParam("inventoryCardId") int id, 
 						 @RequestParam("inventoryCardIdentifier") String identifier,
-						 @RequestParam("inventoryCardProductImage") String productImage) throws IOException {
+						 @RequestParam("inventoryCardProductImage") String productImage) {
 		
 		inventoryCardService.deleteById(id);
 		
 		Path deleteFile = Paths.get("./src/main/resources/static/images/products/" + identifier + "/" + productImage);
 		Path deleteFileFolder = Paths.get("./src/main/resources/static/images/products/" + identifier);
 
-		Files.delete(deleteFile);
-		Files.delete(deleteFileFolder);
+		try {
+			Files.delete(deleteFile);
+			Files.delete(deleteFileFolder);
+		} catch (IOException e) {}
 
 		return "redirect:/amics/catalogue";
 	}
