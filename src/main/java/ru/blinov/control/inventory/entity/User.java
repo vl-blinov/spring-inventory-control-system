@@ -190,14 +190,4 @@ public class User {
 		return firstName + " " + lastName;
 	}
 
-//	@Override
-//	public String toString() {
-//		return "User [id=" + id + ", username=" + username + ", password=" + password + ", enabled=" + enabled
-//				+ ", authority=" + authority + ", firstName=" + firstName + ", lastName=" + lastName + ", department="
-//				+ department + ", position=" + position + ", phone=" + phone + ", email=" + email + ", inventoryCards="
-//				+ inventoryCards + "]";
-//	}
-	
-	
-
 }

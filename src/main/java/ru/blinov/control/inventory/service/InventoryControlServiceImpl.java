@@ -12,7 +12,7 @@ import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.entity.User;
 
 @Service
-public class InventoryCardServiceImpl implements InventoryCardService {
+public class InventoryControlServiceImpl implements InventoryControlService {
 	
 	@Autowired
 	private InventoryCardRepository inventoryCardRepository;
@@ -20,17 +20,17 @@ public class InventoryCardServiceImpl implements InventoryCardService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	//Inventory card
+	
 	@Override
-	public List<InventoryCard> findAll() {
-		
+	public List<InventoryCard> findAllInventoryCards() {
 		return inventoryCardRepository.findAll();
 	}
-
+	
 	@Override
-	public InventoryCard findById(int id) {
+	public InventoryCard findInventoryCardById(int id) {
 		
 		Optional<InventoryCard> result = inventoryCardRepository.findById(id);
-		
 		InventoryCard inventoryCard = null;
 		
 		if(result.isPresent()) {
@@ -44,30 +44,57 @@ public class InventoryCardServiceImpl implements InventoryCardService {
 	}
 
 	@Override
-	public void save(InventoryCard inventoryCard) {
-		
+	public void saveInventoryCard(InventoryCard inventoryCard) {	
 		inventoryCardRepository.save(inventoryCard);
 	}
 
 	@Override
-	public void deleteById(int id) {
-		
+	public void deleteInventoryCardById(int id) {
 		inventoryCardRepository.deleteById(id);
 	}
 
 	@Override
-	public Boolean existsByIdentifier(String identifier) {
-		
+	public Boolean existsInventoryCardByIdentifier(String identifier) {
 		Boolean identifierIsExist = inventoryCardRepository.existsByIdentifier(identifier);
-		
 		return identifierIsExist;
 	}
 
+	//User
+	
+	@Override
+	public List<User> findAllUsers() {
+		return userRepository.findAll();
+	}
+
+	@Override
+	public User findUserById(int id) {
+		
+		Optional<User> result = userRepository.findById(id);
+		User user = null;
+		
+		if(result.isPresent()) {
+			user = result.get();
+		}
+		else {
+			throw new RuntimeException();
+		}
+		
+		return user;
+	}
+
+	@Override
+	public void saveUser(User user) {
+		userRepository.save(user);
+	}
+
+	@Override
+	public void deleteUserById(int id) {
+		userRepository.deleteById(id);
+	}
+	
 	@Override
 	public User findUserByUsername(String username) {
-		
 		User user = userRepository.findByUsername(username);
-		
 		return user;
 	}
 	

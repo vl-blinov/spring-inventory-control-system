@@ -30,19 +30,19 @@ import com.neovisionaries.i18n.CountryCode;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.entity.User;
-import ru.blinov.control.inventory.service.InventoryCardService;
+import ru.blinov.control.inventory.service.InventoryControlService;
 
 @Controller
 @RequestMapping("/amics")
 public class InventoryCardController {
 	
 	@Autowired
-	private InventoryCardService inventoryCardService;
+	private InventoryControlService inventoryCardService;
 	
 	@GetMapping("/catalogue")
 	public String listInventoryCards(Model model) {
 		
-		List<InventoryCard> inventoryCards = inventoryCardService.findAll();
+		List<InventoryCard> inventoryCards = inventoryCardService.findAllInventoryCards();
 		InventoryCard inventoryCard = new InventoryCard();
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -53,7 +53,7 @@ public class InventoryCardController {
 		model.addAttribute("inventoryCard", inventoryCard);
 		model.addAttribute("countries", CountryCode.values());
 		model.addAttribute("user", user);
-//		System.out.println(user);
+
 		return "/inventory/catalogue";
 	}
 	
@@ -61,7 +61,7 @@ public class InventoryCardController {
 	@ResponseBody
 	public InventoryCard viewInventoryCard(@RequestParam("inventoryCardId") int id) {
 		
-		InventoryCard inventoryCard = inventoryCardService.findById(id);
+		InventoryCard inventoryCard = inventoryCardService.findInventoryCardById(id);
 
 		return inventoryCard;
 	}
@@ -100,7 +100,7 @@ public class InventoryCardController {
 		
 		String identifier = inventoryCard.generateIdentifier();
 		while(true) {
-			if(inventoryCardService.existsByIdentifier(identifier)) {
+			if(inventoryCardService.existsInventoryCardByIdentifier(identifier)) {
 				identifier = inventoryCard.generateIdentifier();
 			}
 			else {
@@ -144,17 +144,17 @@ public class InventoryCardController {
 			Files.copy(fileToCopy.toPath(), copiedFile.toPath());
 		}
 
-		inventoryCardService.save(inventoryCard);
+		inventoryCardService.saveInventoryCard(inventoryCard);
 		
 		return "redirect:/amics/catalogue";
 	}
 	
 	@GetMapping("/delete")
-	public String delete(@RequestParam("inventoryCardId") int id, 
+	public String deleteInventoryCard(@RequestParam("inventoryCardId") int id, 
 						 @RequestParam("inventoryCardIdentifier") String identifier,
 						 @RequestParam("inventoryCardProductImage") String productImage) {
 		
-		inventoryCardService.deleteById(id);
+		inventoryCardService.deleteInventoryCardById(id);
 		
 		Path deleteFile = Paths.get("./src/main/resources/static/images/products/" + identifier + "/" + productImage);
 		Path deleteFileFolder = Paths.get("./src/main/resources/static/images/products/" + identifier);

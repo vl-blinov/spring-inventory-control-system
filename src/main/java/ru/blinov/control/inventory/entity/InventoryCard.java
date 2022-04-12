@@ -16,7 +16,6 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
@@ -37,9 +36,6 @@ public class InventoryCard {
 	@Column(name="created_at",
 	    	columnDefinition="TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP")
 	private Date createdAt = new Date();
-	
-	@Column(name="status")
-	private String status;
 	
 	@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 	@ManyToOne(cascade= {CascadeType.DETACH,
@@ -86,7 +82,7 @@ public class InventoryCard {
 		
 	}
 
-	public InventoryCard(int id, String identifier, String className, Date createdAt, String status, User user,
+	public InventoryCard(int id, String identifier, String className, Date createdAt, User user,
 						 String productId, String productName, String productType, String productImage, String productManufacturer,
 						 String productCountry, String productLength, String productWidth, String productHeight,
 						 String productWeight, String productDescription) {
@@ -94,7 +90,6 @@ public class InventoryCard {
 		this.identifier = identifier;
 		this.className = className;
 		this.createdAt = createdAt;
-		this.status = status;
 		this.user = user;
 		this.productId = productId;
 		this.productName = productName;
@@ -139,14 +134,6 @@ public class InventoryCard {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
 	}
 
 	public User getUser() {
@@ -265,20 +252,6 @@ public class InventoryCard {
 		
 		return identifier;
 	}
-
-	@Override
-	public String toString() {
-		return "InventoryCard [id=" + id + ", identifier=" + identifier + ", className=" + className + ", createdAt="
-				+ createdAt + ", status=" + status + ", user=" + user + ", productId=" + productId + ", productName="
-				+ productName + ", productType=" + productType + ", productImage=" + productImage
-				+ ", productManufacturer=" + productManufacturer + ", productCountry=" + productCountry
-				+ ", productLength=" + productLength + ", productWidth=" + productWidth + ", productHeight="
-				+ productHeight + ", productWeight=" + productWeight + ", productDescription=" + productDescription
-				+ "]";
-	}
-
-	
-	
 
 }
 
