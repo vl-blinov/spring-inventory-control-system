@@ -3,7 +3,7 @@
  $(document).ready(function() {
 	$('.view').on('click', function(event) {
 		event.preventDefault();
-		var href = $(this).attr('href');
+		var href = $(this).prop('href');
 		var myModal = new bootstrap.Modal(document.getElementById('addCardModal'), {});
 		$.get(href, function(inventoryCard) {
 			$('.modal-header #formIdentifier').val(inventoryCard.identifier);

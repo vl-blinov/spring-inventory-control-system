@@ -56,7 +56,7 @@ public class User {
 	
 	@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 	@OneToMany(mappedBy="user",
-				cascade= {CascadeType.DETACH,
+			   cascade= {CascadeType.DETACH,
 						CascadeType.MERGE,
 						CascadeType.PERSIST,
 						CascadeType.REFRESH})

@@ -8,11 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -26,10 +26,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ser.std.EnumSerializer;
 import com.neovisionaries.i18n.CountryCode;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.entity.User;
+import ru.blinov.control.inventory.enums.InventoryCardClass;
 import ru.blinov.control.inventory.service.InventoryControlService;
 
 @Controller
@@ -37,23 +39,25 @@ import ru.blinov.control.inventory.service.InventoryControlService;
 public class InventoryCardController {
 	
 	@Autowired
-	private InventoryControlService inventoryCardService;
+	private InventoryControlService inventoryControlService;
 	
 	@GetMapping("/catalogue")
-	public String listInventoryCards(Model model) {
+	public String listInventoryCards(@RequestParam(defaultValue="0") int page, Model model) {
 		
-		List<InventoryCard> inventoryCards = inventoryCardService.findAllInventoryCards();
+		Page<InventoryCard> inventoryCards = inventoryControlService.findAllInventoryCards(page, 4);
 		InventoryCard inventoryCard = new InventoryCard();
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String username = authentication.getName();
-		User user = inventoryCardService.findUserByUsername(username);
+		User user = inventoryControlService.findUserByUsername(username);
 		
-		model.addAttribute("inventoryCards", inventoryCards);	
+		model.addAttribute("inventoryCards", inventoryCards);
+		model.addAttribute("currentPage", page);
 		model.addAttribute("inventoryCard", inventoryCard);
 		model.addAttribute("countries", CountryCode.values());
+		model.addAttribute("inventoryCardClasses", InventoryCardClass.values());
 		model.addAttribute("user", user);
-
+		
 		return "/inventory/catalogue";
 	}
 	
@@ -61,7 +65,7 @@ public class InventoryCardController {
 	@ResponseBody
 	public InventoryCard viewInventoryCard(@RequestParam("inventoryCardId") int id) {
 		
-		InventoryCard inventoryCard = inventoryCardService.findInventoryCardById(id);
+		InventoryCard inventoryCard = inventoryControlService.findInventoryCardById(id);
 
 		return inventoryCard;
 	}
@@ -82,7 +86,7 @@ public class InventoryCardController {
 		
 		String username = authentication.getName();
 		
-		User user = inventoryCardService.findUserByUsername(username);
+		User user = inventoryControlService.findUserByUsername(username);
 		
 		inventoryCard.setUser(user);
 		
@@ -100,7 +104,7 @@ public class InventoryCardController {
 		
 		String identifier = inventoryCard.generateIdentifier();
 		while(true) {
-			if(inventoryCardService.existsInventoryCardByIdentifier(identifier)) {
+			if(inventoryControlService.existsInventoryCardByIdentifier(identifier)) {
 				identifier = inventoryCard.generateIdentifier();
 			}
 			else {
@@ -144,17 +148,17 @@ public class InventoryCardController {
 			Files.copy(fileToCopy.toPath(), copiedFile.toPath());
 		}
 
-		inventoryCardService.saveInventoryCard(inventoryCard);
+		inventoryControlService.saveInventoryCard(inventoryCard);
 		
 		return "redirect:/amics/catalogue";
 	}
 	
 	@GetMapping("/delete")
 	public String deleteInventoryCard(@RequestParam("inventoryCardId") int id, 
-						 @RequestParam("inventoryCardIdentifier") String identifier,
-						 @RequestParam("inventoryCardProductImage") String productImage) {
+						 			  @RequestParam("inventoryCardIdentifier") String identifier,
+						 			  @RequestParam("inventoryCardProductImage") String productImage) {
 		
-		inventoryCardService.deleteInventoryCardById(id);
+		inventoryControlService.deleteInventoryCardById(id);
 		
 		Path deleteFile = Paths.get("./src/main/resources/static/images/products/" + identifier + "/" + productImage);
 		Path deleteFileFolder = Paths.get("./src/main/resources/static/images/products/" + identifier);

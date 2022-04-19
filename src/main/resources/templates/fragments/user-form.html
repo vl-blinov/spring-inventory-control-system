@@ -1,0 +1,144 @@
+<div th:fragment="user-form">
+
+	<!-- User Modal -->
+	<div class="modal fade" data-bs-backdrop="static" id="userFormModal" tabindex="-1" aria-labelledby="userFormModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+	   		<div class="modal-content">
+				
+				<form th:action="@{/amics/users/save}" th:object="${user}" method="POST">
+	
+		    		<!-- Modal header -->
+		      		<div class="modal-header">
+		        		<div class="container">
+		        			<div class="row justify-content-start">
+			        			<div class="d-flex align-items-baseline">
+				        			<div class="col">
+				        				<h5 class="modal-title" id="userFormModalLabel">User form</h5>
+				        			</div>
+				        			<div class="col text-end">
+				        				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModal"></button>
+				        			</div>
+				        		</div>
+		        			</div>
+		        		</div>
+	      			</div>
+
+	      			<!-- Modal body -->
+		      		<div class="modal-body" style="font-size: 14px;">	
+		      			<div class="container">
+			      			<input type="hidden" th:field="*{id}" id="formUserId"/>
+			      			<input type="hidden" th:field="*{password}" id="formPassword"/>
+		      				<div class="mb-3 row">
+		      					<div class="d-flex align-items-baseline">
+		      						<label for="formUsername" class="col-sm-2 col-form-label fw-bold">Username:</label>
+		      						<div class="col-sm-9 ms-auto" style="width:350px;">
+		      							<input type="text" th:field="*{username}" class="form-control form-control-sm" id="formUsername"/>
+		      						</div>
+		      					</div>
+		      				</div>
+		      				<div class="mb-3 row">
+		      					<div class="d-flex align-items-baseline">
+		      						<label for="formFirstName" class="col-sm-2 col-form-label fw-bold">First name:</label>
+		      						<div class="col-sm-9 ms-auto" style="width:350px;">
+		      							<input type="text" th:field="*{firstName}" class="form-control form-control-sm" id="formFirstName"/>
+		      						</div>
+		      					</div>
+		      				</div>
+		      				<div class="mb-3 row">
+		      					<div class="d-flex align-items-baseline">
+		      						<label for="formLastName" class="col-sm-2 col-form-label fw-bold">Last name:</label>
+		      						<div class="col-sm-9 ms-auto" style="width:350px;">
+		      							<input type="text" th:field="*{lastName}" class="form-control form-control-sm" id="formLastName"/>
+		      						</div>
+		      					</div>
+		      				</div>
+		      				<div class="mb-3 row">
+		      					<div class="d-flex align-items-baseline">
+		      						<label for="formDepartment" class="col-sm-2 col-form-label fw-bold">Department:</label>
+		      						<div class="col-sm-9 ms-auto" style="width:350px;">
+		      							<select class="form-select form-select-sm" th:field="*{department}" id="formDepartment">
+											<option th:each="department : ${departments}"
+													th:text="${department.name}"
+													th:value="${department.name}">
+											</option>
+										</select>
+		      						</div>
+		      					</div>
+		      				</div>
+		      				<div class="mb-3 row">
+		      					<div class="d-flex align-items-baseline">
+		      						<label for="formPosition" class="col-sm-2 col-form-label fw-bold">Position:</label>
+		      						<div class="col-sm-9 ms-auto" style="width:350px;">
+		      							<select class="form-select form-select-sm" th:field="*{position}" id="formPosition">
+											<option th:each="position : ${positions}"
+													th:text="${position.name}"
+													th:value="${position.name}">
+											</option>
+										</select>
+		      						</div>
+		      					</div>
+		      				</div>
+		      				<div class="mb-3 row">
+		      					<div class="d-flex align-items-baseline">
+		      						<label for="formPhone" class="col-sm-2 col-form-label fw-bold">Phone:</label>
+		      						<div class="col-sm-9 ms-auto" style="width:350px;">
+		      							<input type="text" th:field="*{phone}" class="form-control form-control-sm" id="formPhone"/>
+		      						</div>
+		      					</div>
+		      				</div>
+		      				<div class="mb-3 row">
+		      					<div class="d-flex align-items-baseline">
+		      						<label for="formEmail" class="col-sm-2 col-form-label fw-bold">Email:</label>
+		      						<div class="col-sm-9 ms-auto" style="width:350px;">
+		      							<input type="text" th:field="*{email}" class="form-control form-control-sm" id="formEmail"/>
+		      						</div>
+		      					</div>
+		      				</div>
+		      				<div class="mb-3 row">
+		      					<div class="d-flex align-items-baseline">
+		      						<label for="formAuthority" class="col-sm-2 col-form-label fw-bold">Authority:</label>
+		      						<div class="col-sm-9 ms-auto" style="width:350px;">
+		      							<select class="form-select form-select-sm" th:field="*{authority}" id="formAuthority">
+											<option th:each="authority : ${authorities}"
+													th:text="${authority.name}"
+													th:value="${authority.name}">
+											</option>
+										</select>
+		      						</div>
+		      					</div>
+		      				</div>
+		      				<div class="mb-3 row">
+		      					<div class="d-flex align-items-baseline">
+		      						<label for="formEnabled" class="col-sm-2 col-form-label fw-bold">Enabled:</label>
+		      						<div class="col-sm-9 ms-auto" style="width:350px;">
+		      							<select class="form-select form-select-sm" th:field="*{enabled}" id="formEnabled">
+											<option th:each="status : ${enabled}"
+													th:text="${status.value}"
+													th:value="${status.value}">
+											</option>
+										</select>
+		      						</div>
+		      					</div>
+		      				</div>
+		      				
+		      			</div>		
+		      		</div>
+		      		
+		      		<!-- Modal footer -->
+		      		<div class="modal-footer">
+		      			<div class="row">
+			        		<div class="d-flex align-items-baseline">
+				        		<div class="col text-end">
+				        			<button type="submit" class="btn btn-primary" id="userFormSaveButton">Save</button>
+				        			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeButton">Cancel</button>
+				        		</div>
+				        	</div>
+		        		</div>
+		      		</div>
+		      		
+	      		</form>
+	    	</div>
+		</div>
+	</div>
+	
+</div>

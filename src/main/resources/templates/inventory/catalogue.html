@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 	<head>
-
 	    <!-- Required meta tags -->
 	    <meta charset="utf-8">
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,6 +11,9 @@
 			  rel="stylesheet"
 			  integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
 			  crossorigin="anonymous">
+		
+		<!-- Bootstrap icons -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 		
 		<!-- Font Bebas Neue -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,32 +46,47 @@
     	
 		<!-- Catalogue-->
 		<div class="container">
-			<br>
-			
-			<!-- Button trigger a card modal -->
-			<p>
-				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCardModal">
-					New card
-				</button>
-			</p>
-			
+			<h3 class="mt-3">Catalogue</h3>
+			<hr class="mt-0">
+
+			<div class="row">
+				<div class="col">
+					<!-- Button trigger a card modal -->
+					<button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addCardModal">
+						New card
+					</button>
+				</div>
+				<div class="col">
+					<!-- Pagination -->
+					<nav aria-label="page navigation">
+						<ul class="pagination justify-content-end mb-2">
+							<li class="page-item" th:each="page : ${#numbers.sequence(0, inventoryCards.totalPages - 1)}" 
+								th:classappend="${currentPage}==${page} ? 'active' : '' ">
+								<a class="page-link" th:href="@{/amics/catalogue/(page=${page})}" th:text="${page}"></a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+
 			<!-- Card Modal -->
 			<div th:replace="fragments/inventory-card :: inventory-card"></div>
 			
 			<!-- Catalogue table -->
-			<table class="table table-bordered table-striped align-middle" style="font-size: 14px;">
+			<table class="table table-bordered table-striped align-middle mb-2" style="font-size: 14px;">
 			
 				<!-- Table head -->
 				<thead class="thead table-dark">
 					<tr class="text-center">
-						<th>Use</th>
-						<th>Image</th>
-						<th>Identifier</th>
+						<th style="width: 50px">Use</th>
+						<th style="width: 160px">Image</th>
+						<th style="width: 120px">Identifier</th>
+						<th style="width: 120px">Class</th>
 						<th>Name</th>
 						<th>Type</th>
 						<th>Product ID</th>
-						<th>Manufacturer</th>
-						<th>Country</th>
+						<th style="width: 150px">Manufacturer</th>
+						<th style="width: 150px">Country</th>
 					</tr>
 				</thead>
 				
@@ -77,27 +94,32 @@
 				<tbody>
 					<tr th:each="inventoryCard : ${inventoryCards}">
 						<td class="text-center">
-							<div class="form-check">
-								<input class="form-check-input" type="checkbox" id="flexCheck" th:value="${inventoryCard.identifier}">
+							<div class="d-flex justify-content-center">
+								<div class="form-check mb-0">
+									<input class="form-check-input" type="checkbox" id="flexCheck" th:value="${inventoryCard.identifier}"
+										   style="width: 30px; height: 30px;">
+								</div>
 							</div>
+							<hr class="mt-1 mb-1">
 							<div>  				
 								<a th:href="@{/amics/delete(inventoryCardId=${inventoryCard.id}, 
 															inventoryCardIdentifier=${inventoryCard.identifier},
 															inventoryCardProductImage=${inventoryCard.productImage})}"
 								   class="btn btn-danger btn-sm"
 								   onclick="if (!(confirm('Delete this card?'))) return false">
-									X
+									<i class="bi bi-trash3"></i>
 								</a>
 							</div>
 						</td>
 						<td>
 							<img th:src="@{${inventoryCard.productImagePath}}" class="mx-auto d-block" 
-								 style="width: 144px; height: 105px; overflow: hidden; margin: auto;">
+								 style="width: 139px; height: 100px; overflow: hidden; margin: auto;">
 						</td>
 						<td class="text-center">
 							<a th:text="${inventoryCard.identifier}" th:href="@{/amics/view(inventoryCardId=${inventoryCard.id})}" 
 							   class="view"></a>
 						</td>
+						<td th:text="${inventoryCard.className}"/>
 						<td th:text="${inventoryCard.productName}"/>
 						<td th:text="${inventoryCard.productType}"/>
 						<td th:text="${inventoryCard.productId}"/>
@@ -111,3 +133,34 @@
 		
 	</body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

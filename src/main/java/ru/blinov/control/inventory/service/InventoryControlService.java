@@ -2,13 +2,15 @@ package ru.blinov.control.inventory.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.entity.User;
 
 public interface InventoryControlService {
 	
 	//Inventory card
-	public List<InventoryCard> findAllInventoryCards();
+	public Page<InventoryCard> findAllInventoryCards(int page, int size);
 	
 	public InventoryCard findInventoryCardById(int id);
 	

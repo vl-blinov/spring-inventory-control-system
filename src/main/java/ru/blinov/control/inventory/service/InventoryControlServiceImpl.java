@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import ru.blinov.control.inventory.dao.InventoryCardRepository;
@@ -23,8 +25,8 @@ public class InventoryControlServiceImpl implements InventoryControlService {
 	//Inventory card
 	
 	@Override
-	public List<InventoryCard> findAllInventoryCards() {
-		return inventoryCardRepository.findAll();
+	public Page<InventoryCard> findAllInventoryCards(int page, int size) {
+		return inventoryCardRepository.findAll(PageRequest.of(page, size));
 	}
 	
 	@Override

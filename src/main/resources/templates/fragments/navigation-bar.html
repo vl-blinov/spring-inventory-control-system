@@ -20,10 +20,10 @@
 				</ul>
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 					<li class="nav-item">
-						<a class="nav-link" href="#">Users</a>
+						<a class="nav-link" th:href="@{/amics/users/list}">Users</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#">Profile</a>
+						<a class="nav-link" th:href="@{/amics/users/profile}">Profile</a>
 					</li>
 					<li class="nav-item ">
 						<form th:action="@{/logout}" method="POST">
