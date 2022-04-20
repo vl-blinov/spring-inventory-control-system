@@ -1,6 +1,6 @@
 package ru.blinov.control.inventory.entity;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -33,9 +33,8 @@ public class InventoryCard {
 	@Column(name="class")
 	private String className;
 	
-	@Column(name="created_at",
-	    	columnDefinition="TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP")
-	private Date createdAt = new Date();
+	@Column(name="created_at")
+	private ZonedDateTime createdAt = ZonedDateTime.now();
 	
 	@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
 	@ManyToOne(cascade= {CascadeType.DETACH,
@@ -82,7 +81,7 @@ public class InventoryCard {
 		
 	}
 
-	public InventoryCard(int id, String identifier, String className, Date createdAt, User user,
+	public InventoryCard(int id, String identifier, String className, ZonedDateTime createdAt, User user,
 						 String productId, String productName, String productType, String productImage, String productManufacturer,
 						 String productCountry, String productLength, String productWidth, String productHeight,
 						 String productWeight, String productDescription) {
@@ -128,11 +127,11 @@ public class InventoryCard {
 		this.className = className;
 	}
 
-	public Date getCreatedAt() {
+	public ZonedDateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(ZonedDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
@@ -231,6 +230,17 @@ public class InventoryCard {
 	public void setProductDescription(String productDescription) {
 		this.productDescription = productDescription;
 	}
+
+//	public String generateIdentifier() {
+//		
+//		String part1 = RandomStringUtils.randomNumeric(2);
+//		String part2 = RandomStringUtils.randomNumeric(5);
+//		String part3 = RandomStringUtils.randomNumeric(3);
+//		
+//		String identifier = part1.concat("h").concat(part2).concat("e").concat(part3);
+//		
+//		return identifier;
+//	}
 	
 	@Transient
 	public String getProductImagePath() {
@@ -242,17 +252,6 @@ public class InventoryCard {
 		return "/src/main/resources/static/images/products/" + identifier + "/" + productImage;	
 	}
 	
-	public String generateIdentifier() {
-		
-		String part1 = RandomStringUtils.randomNumeric(2);
-		String part2 = RandomStringUtils.randomNumeric(5);
-		String part3 = RandomStringUtils.randomNumeric(3);
-		
-		String identifier = part1.concat("h").concat(part2).concat("e").concat(part3);
-		
-		return identifier;
-	}
-
 }
 
 

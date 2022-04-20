@@ -48,11 +48,26 @@
 			<h3 class="mt-3">Users</h3>
 			<hr class="mt-0">
 			
-			<!-- Button trigger a user form modal -->
-			<button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#userFormModal">
-				Add user
-			</button>
-			
+			<div class="row">
+				<div class="col">
+					<!-- Button trigger a user form modal -->
+					<button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#userFormModal">
+						Add user
+					</button>
+				</div>
+				<div class="col">
+					<!-- Pagination -->
+					<nav aria-label="page navigation">
+						<ul class="pagination justify-content-end mb-2">
+							<li class="page-item" th:each="page : ${#numbers.sequence(0, users.totalPages - 1)}" 
+								th:classappend="${currentPage}==${page} ? 'active' : '' ">
+								<a class="page-link" th:href="@{/amics/users/list/(page=${page})}" th:text="${page}"></a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+
 			<!-- User Modal -->
 			<div th:replace="fragments/user-form :: user-form"></div>
 			
@@ -65,13 +80,13 @@
 						<th>Username</th>
 						<th>First name</th>
 						<th>Last name</th>
-						<th>Department</th>
-						<th>Position</th>
+						<th style="width: 175px">Department</th>
+						<th style="width: 115px">Position</th>
 						<th>Phone</th>
 						<th>Email</th>
-						<th>Authority</th>
-						<th>Enabled</th>
-						<th>Action</th>
+						<th style="width: 100px">Authority</th>
+						<th style="width: 70px">Enabled</th>
+						<th style="width: 100px">Action</th>
 					</tr>
 				</thead>
 				

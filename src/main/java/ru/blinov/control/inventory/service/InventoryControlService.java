@@ -1,7 +1,5 @@
 package ru.blinov.control.inventory.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
@@ -10,6 +8,7 @@ import ru.blinov.control.inventory.entity.User;
 public interface InventoryControlService {
 	
 	//Inventory card
+	
 	public Page<InventoryCard> findAllInventoryCards(int page, int size);
 	
 	public InventoryCard findInventoryCardById(int id);
@@ -18,10 +17,17 @@ public interface InventoryControlService {
 	
 	public void deleteInventoryCardById(int id);
 	
-	public Boolean existsInventoryCardByIdentifier(String identifier);
+//	public Boolean existsInventoryCardByIdentifier(String identifier);
+	
+	public void deleteImageFromDirectory(String fileName, String folderName);
+	
+	public void setInventoryCardIdentifier(InventoryCard inventoryCard);
+	
+	public void setInventoryCardUser(InventoryCard inventoryCard, String username);
 	
 	//User
-	public List<User> findAllUsers();
+	
+	public Page<User> findAllUsers(int page, int size);
 	
 	public User findUserById(int id);
 	

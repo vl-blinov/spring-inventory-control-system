@@ -1,10 +1,9 @@
 package ru.blinov.control.inventory.controller;
 
-import java.util.List;
+import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,11 +32,9 @@ public class UserController {
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	@GetMapping("/profile")
-	public String showUserProfile(Model model) {
+	public String showUserProfile(Model model, Principal principal) {
 		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String username = authentication.getName();
-		User user = inventoryControlService.findUserByUsername(username);
+		User user = inventoryControlService.findUserByUsername(principal.getName());
 		
 		model.addAttribute("user", user);
 		
@@ -45,18 +42,20 @@ public class UserController {
 	}
 	
 	@GetMapping("/list")
-	public String listUsers(Model model) {
+	public String listUsers(@RequestParam(defaultValue="0") int page, Model model) {
 		
-		List<User> users = inventoryControlService.findAllUsers();
-		User user = new User();
+		Page<User> users = inventoryControlService.findAllUsers(page, 5);
 		
 		model.addAttribute("users", users);
-		model.addAttribute("user", user);
+		model.addAttribute("currentPage", page);
+		
+		model.addAttribute("user", new User());
+		
 		model.addAttribute("departments", Department.values());
 		model.addAttribute("positions", Position.values());
 		model.addAttribute("authorities", Authority.values());
 		model.addAttribute("enabled", Enabled.values());
-				
+		
 		return "/users/list-users";
 	}
 	

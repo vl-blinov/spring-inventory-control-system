@@ -1,6 +1,9 @@
 package ru.blinov.control.inventory.service;
 
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import ru.blinov.control.inventory.dao.InventoryCardRepository;
 import ru.blinov.control.inventory.dao.UserRepository;
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.entity.User;
+import ru.blinov.control.inventory.util.IdentifierGenerator;
 
 @Service
 public class InventoryControlServiceImpl implements InventoryControlService {
@@ -47,25 +51,68 @@ public class InventoryControlServiceImpl implements InventoryControlService {
 
 	@Override
 	public void saveInventoryCard(InventoryCard inventoryCard) {	
+		
 		inventoryCardRepository.save(inventoryCard);
 	}
 
 	@Override
 	public void deleteInventoryCardById(int id) {
+		
 		inventoryCardRepository.deleteById(id);
 	}
 
+//	@Override
+//	public Boolean existsInventoryCardByIdentifier(String identifier) {
+//		
+//		Boolean identifierIsExist = inventoryCardRepository.existsByIdentifier(identifier);
+//		
+//		return identifierIsExist;
+//	}
+	
 	@Override
-	public Boolean existsInventoryCardByIdentifier(String identifier) {
-		Boolean identifierIsExist = inventoryCardRepository.existsByIdentifier(identifier);
-		return identifierIsExist;
-	}
+	public void deleteImageFromDirectory(String fileName, String folderName) {
 
+		Path deleteFile = Paths.get("./src/main/resources/static/images/products/" + folderName + "/" + fileName);
+		Path deleteFolder = Paths.get("./src/main/resources/static/images/products/" + folderName);
+
+		try {
+			Files.delete(deleteFile);
+			Files.delete(deleteFolder);
+		} catch (IOException e) {}
+		
+	}
+	
+	@Override
+	public void setInventoryCardIdentifier(InventoryCard inventoryCard) {
+		
+		String identifier = IdentifierGenerator.randomIdentifier();
+		
+		while(true) {
+			if(inventoryCardRepository.existsByIdentifier(identifier)) {
+				identifier = IdentifierGenerator.randomIdentifier();
+			}
+			else {
+				break;
+			}
+		}
+		
+		inventoryCard.setIdentifier(identifier);
+	}
+	
+	@Override
+	public void setInventoryCardUser(InventoryCard inventoryCard, String username) {
+
+		User user = userRepository.findByUsername(username);
+		
+		inventoryCard.setUser(user);
+	}
+	
 	//User
 	
 	@Override
-	public List<User> findAllUsers() {
-		return userRepository.findAll();
+	public Page<User> findAllUsers(int page, int size) {
+		
+		return userRepository.findAll(PageRequest.of(page, size));
 	}
 
 	@Override
@@ -86,17 +133,21 @@ public class InventoryControlServiceImpl implements InventoryControlService {
 
 	@Override
 	public void saveUser(User user) {
+		
 		userRepository.save(user);
 	}
 
 	@Override
 	public void deleteUserById(int id) {
+		
 		userRepository.deleteById(id);
 	}
 	
 	@Override
 	public User findUserByUsername(String username) {
+		
 		User user = userRepository.findByUsername(username);
+		
 		return user;
 	}
 	

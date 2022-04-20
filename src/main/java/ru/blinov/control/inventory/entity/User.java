@@ -55,11 +55,10 @@ public class User {
 	private String email;
 	
 	@JsonIdentityInfo(generator=ObjectIdGenerators.UUIDGenerator.class, property="@id")
-	@OneToMany(mappedBy="user",
-			   cascade= {CascadeType.DETACH,
-						CascadeType.MERGE,
-						CascadeType.PERSIST,
-						CascadeType.REFRESH})
+	@OneToMany(mappedBy="user", cascade= {CascadeType.DETACH,
+										  CascadeType.MERGE,
+										  CascadeType.PERSIST,
+										  CascadeType.REFRESH})
 	private List<InventoryCard> inventoryCards;
 	
 	public User() {

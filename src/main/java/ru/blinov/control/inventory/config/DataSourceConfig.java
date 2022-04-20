@@ -28,7 +28,6 @@ public class DataSourceConfig {
 		return builder.dataSource(dataSource).build();	
 	}
 	
-	
 }
 
 
