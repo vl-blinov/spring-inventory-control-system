@@ -24,6 +24,8 @@ public interface InventoryControlService {
 	
 	public void setInventoryCardUser(InventoryCard inventoryCard, String username);
 	
+	public void deleteInventoryCardUser(User user);
+	
 	public void copyProductImage(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc);
 	
 	//User

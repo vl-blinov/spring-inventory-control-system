@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +98,16 @@ public class InventoryControlServiceImpl implements InventoryControlService {
 		User user = userRepository.findByUsername(username);
 		
 		inventoryCard.setUser(user);
+	}
+	
+	@Override
+	public void deleteInventoryCardUser(User user) {
+		
+		List<InventoryCard> inventoryCards = inventoryCardRepository.findAllByUser(user);
+		
+		for(int i = 0; i < inventoryCards.size(); i++) {
+			inventoryCards.get(i).setUser(null);
+		}	
 	}
 	
 	@Override

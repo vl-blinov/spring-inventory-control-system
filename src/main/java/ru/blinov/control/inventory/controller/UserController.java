@@ -73,6 +73,8 @@ public class UserController {
 	@GetMapping("/delete")
 	public String deleteUser(@RequestParam("userId") int userId) {
 		
+		inventoryControlService.deleteInventoryCardUser(inventoryControlService.findUserById(userId));
+		
 		inventoryControlService.deleteUserById(userId);
 		
 		return "redirect:/amics/users/list";
