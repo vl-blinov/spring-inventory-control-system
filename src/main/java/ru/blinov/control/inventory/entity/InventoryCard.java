@@ -13,8 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang3.RandomStringUtils;
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -230,17 +228,6 @@ public class InventoryCard {
 	public void setProductDescription(String productDescription) {
 		this.productDescription = productDescription;
 	}
-
-//	public String generateIdentifier() {
-//		
-//		String part1 = RandomStringUtils.randomNumeric(2);
-//		String part2 = RandomStringUtils.randomNumeric(5);
-//		String part3 = RandomStringUtils.randomNumeric(3);
-//		
-//		String identifier = part1.concat("h").concat(part2).concat("e").concat(part3);
-//		
-//		return identifier;
-//	}
 	
 	@Transient
 	public String getProductImagePath() {
@@ -253,19 +240,3 @@ public class InventoryCard {
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

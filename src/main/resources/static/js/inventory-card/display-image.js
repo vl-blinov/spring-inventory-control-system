@@ -1,4 +1,4 @@
-/* Display image in a card modal  */
+/* Display image in an inventory card modal  */
 
 $(document).ready(function() {
 	$('.modal-body #fileImage').change(function() {

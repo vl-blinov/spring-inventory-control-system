@@ -1,4 +1,4 @@
-/* View inventory card */
+/* View a modal with an existing inventory card */
  
  $(document).ready(function() {
 	$('.view').on('click', function(event) {

@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import ru.blinov.control.inventory.dao.InventoryCardRepository;
 import ru.blinov.control.inventory.dao.UserRepository;
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.entity.User;
 import ru.blinov.control.inventory.util.IdentifierGenerator;
+import ru.blinov.control.inventory.util.InventoryFileHandler;
 
 @Service
 public class InventoryControlServiceImpl implements InventoryControlService {
@@ -50,24 +52,14 @@ public class InventoryControlServiceImpl implements InventoryControlService {
 	}
 
 	@Override
-	public void saveInventoryCard(InventoryCard inventoryCard) {	
-		
+	public void saveInventoryCard(InventoryCard inventoryCard) {		
 		inventoryCardRepository.save(inventoryCard);
 	}
 
 	@Override
-	public void deleteInventoryCardById(int id) {
-		
+	public void deleteInventoryCardById(int id) {		
 		inventoryCardRepository.deleteById(id);
 	}
-
-//	@Override
-//	public Boolean existsInventoryCardByIdentifier(String identifier) {
-//		
-//		Boolean identifierIsExist = inventoryCardRepository.existsByIdentifier(identifier);
-//		
-//		return identifierIsExist;
-//	}
 	
 	@Override
 	public void deleteImageFromDirectory(String fileName, String folderName) {
@@ -107,11 +99,15 @@ public class InventoryControlServiceImpl implements InventoryControlService {
 		inventoryCard.setUser(user);
 	}
 	
+	@Override
+	public void copyProductImage(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc) {
+		InventoryFileHandler.copyProductImage(inventoryCard, multipartFile, imageSrc);
+	}
+	
 	//User
 	
 	@Override
-	public Page<User> findAllUsers(int page, int size) {
-		
+	public Page<User> findAllUsers(int page, int size) {	
 		return userRepository.findAll(PageRequest.of(page, size));
 	}
 
@@ -132,36 +128,18 @@ public class InventoryControlServiceImpl implements InventoryControlService {
 	}
 
 	@Override
-	public void saveUser(User user) {
-		
+	public void saveUser(User user) {	
 		userRepository.save(user);
 	}
 
 	@Override
-	public void deleteUserById(int id) {
-		
+	public void deleteUserById(int id) {	
 		userRepository.deleteById(id);
 	}
 	
 	@Override
 	public User findUserByUsername(String username) {
-		
-		User user = userRepository.findByUsername(username);
-		
-		return user;
+		return userRepository.findByUsername(username);
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

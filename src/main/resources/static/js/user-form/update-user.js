@@ -1,4 +1,4 @@
-/* Update user */
+/* View a modal with an existing user for updating */
  
  $(document).ready(function() {
 	$('.update').on('click', function(event) {

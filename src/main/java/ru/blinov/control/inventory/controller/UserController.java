@@ -3,7 +3,6 @@ package ru.blinov.control.inventory.controller;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,9 +33,7 @@ public class UserController {
 	@GetMapping("/profile")
 	public String showUserProfile(Model model, Principal principal) {
 		
-		User user = inventoryControlService.findUserByUsername(principal.getName());
-		
-		model.addAttribute("user", user);
+		model.addAttribute("user", inventoryControlService.findUserByUsername(principal.getName()));
 		
 		return "/users/user-profile";
 	}
@@ -44,9 +41,7 @@ public class UserController {
 	@GetMapping("/list")
 	public String listUsers(@RequestParam(defaultValue="0") int page, Model model) {
 		
-		Page<User> users = inventoryControlService.findAllUsers(page, 5);
-		
-		model.addAttribute("users", users);
+		model.addAttribute("users", inventoryControlService.findAllUsers(page, 5));
 		model.addAttribute("currentPage", page);
 		
 		model.addAttribute("user", new User());
@@ -62,7 +57,6 @@ public class UserController {
 	@GetMapping("/find")
 	@ResponseBody
 	public User findUser(@RequestParam("userId") int userId) {
-		
 		return inventoryControlService.findUserById(userId);
 	}
 	
@@ -85,14 +79,3 @@ public class UserController {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-

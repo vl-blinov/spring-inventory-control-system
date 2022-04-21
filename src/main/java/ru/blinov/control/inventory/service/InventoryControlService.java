@@ -1,6 +1,7 @@
 package ru.blinov.control.inventory.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.entity.User;
@@ -17,13 +18,13 @@ public interface InventoryControlService {
 	
 	public void deleteInventoryCardById(int id);
 	
-//	public Boolean existsInventoryCardByIdentifier(String identifier);
-	
 	public void deleteImageFromDirectory(String fileName, String folderName);
 	
 	public void setInventoryCardIdentifier(InventoryCard inventoryCard);
 	
 	public void setInventoryCardUser(InventoryCard inventoryCard, String username);
+	
+	public void copyProductImage(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc);
 	
 	//User
 	
