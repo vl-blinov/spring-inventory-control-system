@@ -7,10 +7,13 @@ $(document).ready(function() {
 });	
 
 function showImageThumbnail(fileInput) {
+	
 	file = fileInput.files[0];
 	reader = new FileReader();
+	
 	reader.onload = function(e) {
 		$('.modal-body #productImage').prop('src', e.target.result);
 	};
+	
 	reader.readAsDataURL(file);
 }

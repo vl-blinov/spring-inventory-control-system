@@ -41,7 +41,7 @@ public class UserController {
 	@GetMapping("/list")
 	public String listUsers(@RequestParam(defaultValue="0") int page, Model model) {
 		
-		model.addAttribute("users", inventoryControlService.findAllUsers(page, 5));
+		model.addAttribute("users", inventoryControlService.findAllUsers(page, 8));
 		model.addAttribute("currentPage", page);
 		
 		model.addAttribute("user", new User());

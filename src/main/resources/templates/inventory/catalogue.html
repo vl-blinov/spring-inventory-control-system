@@ -53,7 +53,7 @@
 			<div class="row">
 				<div class="col">
 					<!-- Button trigger a card modal -->
-					<button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addCardModal">
+					<button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#inventoryCardModal">
 						New card
 					</button>
 				</div>
@@ -84,10 +84,10 @@
 						<th style="width: 120px">Identifier</th>
 						<th style="width: 120px">Class</th>
 						<th>Name</th>
-						<th>Type</th>
-						<th>Product ID</th>
-						<th style="width: 150px">Manufacturer</th>
-						<th style="width: 150px">Country</th>
+						<th style="width: 240px">Type</th>
+						<th style="width: 160px">Product ID</th>
+						<th style="width: 110px">Manufacturer</th>
+						<th style="width: 110px">Country</th>
 					</tr>
 				</thead>
 				
@@ -114,7 +114,7 @@
 						</td>
 						<td>
 							<img th:src="@{${inventoryCard.productImagePath}}" class="mx-auto d-block" 
-								 style="width: 139px; height: 100px; overflow: hidden; margin: auto;">
+								 style="width: 140px; height: 100px; overflow: hidden; margin: auto;">
 						</td>
 						<td class="text-center">
 							<a th:text="${inventoryCard.identifier}" th:href="@{/amics/view(inventoryCardId=${inventoryCard.id})}" 

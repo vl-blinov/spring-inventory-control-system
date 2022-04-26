@@ -65,8 +65,8 @@ public class User {
 		
 	}
 
-	public User(String username, String password, int enabled, String authority, String firstName, String lastName,
-			String department, String position, String phone, String email) {
+	public User(String username, String password, int enabled, String authority, String firstName,
+			String lastName, String department, String position, String phone, String email) {
 		this.username = username;
 		this.password = password;
 		this.enabled = enabled;

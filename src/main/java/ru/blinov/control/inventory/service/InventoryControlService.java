@@ -8,7 +8,7 @@ import ru.blinov.control.inventory.entity.User;
 
 public interface InventoryControlService {
 	
-	//Inventory card
+	//Inventory card	
 	
 	public Page<InventoryCard> findAllInventoryCards(int page, int size);
 	
@@ -39,5 +39,5 @@ public interface InventoryControlService {
 	public void deleteUserById(int id);
 	
 	public User findUserByUsername(String username);
-
+	
 }

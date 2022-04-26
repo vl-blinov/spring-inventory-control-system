@@ -16,15 +16,13 @@ public class DataSourceConfig {
 	
 	@Bean
 	@ConfigurationProperties(prefix="spring.datasource")
-	public DataSource dataSource() {
-		
+	public DataSource dataSource() {	
 		return DataSourceBuilder.create().build();	
 	}
 	
 	@Bean
 	@ConfigurationProperties(prefix="spring.data.jpa.entity")
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, DataSource dataSource) {
-		
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, DataSource dataSource) {	
 		return builder.dataSource(dataSource).build();	
 	}
 	

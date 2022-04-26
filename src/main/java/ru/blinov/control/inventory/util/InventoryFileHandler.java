@@ -16,7 +16,7 @@ public class InventoryFileHandler {
 	
 	public static void copyProductImage(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc) {
 		
-		String fileName;
+		String fileName = null;
 		
 		String identifier = inventoryCard.getIdentifier();
 		

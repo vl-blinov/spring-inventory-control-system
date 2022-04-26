@@ -5,7 +5,7 @@
 		
 		event.preventDefault();
 		var href = $(this).prop('href');
-		var myModal = new bootstrap.Modal(document.getElementById('addCardModal'), {});
+		var myModal = new bootstrap.Modal(document.getElementById('inventoryCardModal'), {});
 		
 		$.get(href, function(inventoryCard) {
 			$('.modal-header #formIdentifier').val(inventoryCard.identifier);
@@ -37,10 +37,10 @@
 			var checkedValue = $('.form-check-input:checked').val();
 
 			if(identifier == checkedValue) {
-				$('#addCardModal :input').prop('disabled', false);
+				$('#inventoryCardModal :input').prop('disabled', false);
 			}
 			else {
-				$('#addCardModal :input').prop('disabled', true);
+				$('#inventoryCardModal :input').prop('disabled', true);
 				$('.modal-header #closeModal').prop('disabled', false);
 				$('.modal-footer #closeButton').prop('disabled', false);
 			}

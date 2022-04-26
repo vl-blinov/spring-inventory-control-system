@@ -1,7 +1,7 @@
 <div th:fragment="inventory-card">
 
 	<!-- Card Modal -->
-	<div class="modal fade" data-bs-backdrop="static" id="addCardModal" tabindex="-1" aria-labelledby="addCardModalLabel" aria-hidden="true">
+	<div class="modal fade" data-bs-backdrop="static" id="inventoryCardModal" tabindex="-1" aria-labelledby="inventoryCardModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 	   		<div class="modal-content">
 				
@@ -13,7 +13,7 @@
 		        			<div class="row justify-content-start">
 			        			<div class="d-flex align-items-baseline">
 				        			<div class="col">
-				        				<h5 class="modal-title" id="addCardModalLabel">Inventory card</h5>
+				        				<h5 class="modal-title" id="inventoryCardModalLabel">Inventory card</h5>
 				        			</div>
 				        			<div class="col text-end">
 				        				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModal"></button>
@@ -50,7 +50,7 @@
 		      					<!-- Image -->
 		      					<div class="col">
 				      				<p>
-										<img id="productImage" class="img-thumbnail" style="width: 255px; height: 186px; overflow: hidden; margin: auto;">
+										<img id="productImage" class="img-thumbnail" style="width: 259px; height: 185px; overflow: hidden; margin: auto;">
 									</p>
 									<p>
 										<input type="file" class="form-control form-control-sm" th:name="fileImage" id="fileImage" 
