@@ -1,0 +1,1 @@
+CREATE DATABASE inventory_control_system OWNER inventory_control_system;

@@ -5,7 +5,7 @@
 		<div class="modal-dialog modal-dialog-centered" role="document">
 	   		<div class="modal-content">
 				
-				<form th:action="@{/amics/users/save}" th:object="${user}" method="POST">
+				<form action="#" th:action="@{/amics/users/save}" th:object="${user}" method="POST">
 	
 		    		<!-- Modal header -->
 		      		<div class="modal-header">
@@ -29,26 +29,26 @@
 			      			<input type="hidden" th:field="*{id}" id="formUserId"/>
 			      			<input type="hidden" th:field="*{password}" id="formPassword"/>
 		      				<div class="mb-3 row">
-		      					<div class="d-flex align-items-baseline">
+		      					<div class="d-flex align-items-baseline has-validation">
 		      						<label for="formUsername" class="col-sm-2 col-form-label fw-bold">Username:</label>
 		      						<div class="col-sm-9 ms-auto" style="width:350px;">
-		      							<input type="text" th:field="*{username}" class="form-control form-control-sm" id="formUsername"/>
+		      							<input type="text" th:field="*{username}" class="form-control form-control-sm" id="formUsername" maxlength="30" required/>
 		      						</div>
 		      					</div>
 		      				</div>
 		      				<div class="mb-3 row">
-		      					<div class="d-flex align-items-baseline">
+		      					<div class="d-flex align-items-baseline has-validation">
 		      						<label for="formFirstName" class="col-sm-2 col-form-label fw-bold">First name:</label>
 		      						<div class="col-sm-9 ms-auto" style="width:350px;">
-		      							<input type="text" th:field="*{firstName}" class="form-control form-control-sm" id="formFirstName"/>
+		      							<input type="text" th:field="*{firstName}" class="form-control form-control-sm" id="formFirstName" maxlength="50" required/>
 		      						</div>
 		      					</div>
 		      				</div>
 		      				<div class="mb-3 row">
-		      					<div class="d-flex align-items-baseline">
+		      					<div class="d-flex align-items-baseline has-validation">
 		      						<label for="formLastName" class="col-sm-2 col-form-label fw-bold">Last name:</label>
 		      						<div class="col-sm-9 ms-auto" style="width:350px;">
-		      							<input type="text" th:field="*{lastName}" class="form-control form-control-sm" id="formLastName"/>
+		      							<input type="text" th:field="*{lastName}" class="form-control form-control-sm" id="formLastName" maxlength="50" required/>
 		      						</div>
 		      					</div>
 		      				</div>
@@ -79,18 +79,18 @@
 		      					</div>
 		      				</div>
 		      				<div class="mb-3 row">
-		      					<div class="d-flex align-items-baseline">
+		      					<div class="d-flex align-items-baseline has-validation">
 		      						<label for="formPhone" class="col-sm-2 col-form-label fw-bold">Phone:</label>
 		      						<div class="col-sm-9 ms-auto" style="width:350px;">
-		      							<input type="text" th:field="*{phone}" class="form-control form-control-sm" id="formPhone"/>
+		      							<input type="text" th:field="*{phone}" class="form-control form-control-sm" id="formPhone" maxlength="25" required/>
 		      						</div>
 		      					</div>
 		      				</div>
 		      				<div class="mb-3 row">
-		      					<div class="d-flex align-items-baseline">
+		      					<div class="d-flex align-items-baseline has-validation">
 		      						<label for="formEmail" class="col-sm-2 col-form-label fw-bold">Email:</label>
 		      						<div class="col-sm-9 ms-auto" style="width:350px;">
-		      							<input type="text" th:field="*{email}" class="form-control form-control-sm" id="formEmail"/>
+		      							<input type="email" th:field="*{email}" class="form-control form-control-sm" id="formEmail" maxlength="70" required/>
 		      						</div>
 		      					</div>
 		      				</div>

@@ -5,7 +5,7 @@
 		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 	   		<div class="modal-content">
 				
-				<form th:action="@{/amics/save}" th:object="${inventoryCard}" method="POST" enctype="multipart/form-data">
+				<form action="#" th:action="@{/amics/save}" th:object="${inventoryCard}" method="POST" enctype="multipart/form-data">
 	
 		    		<!-- Modal header -->
 		      		<div class="modal-header">
@@ -65,7 +65,7 @@
 				      					<div class="d-flex align-items-baseline">
 				      						<label for="formProductLength" class="col-sm-2 col-form-label fw-bold">Length:</label>
 				      						<div class="col-sm-10">
-				      							<input type="text" th:field="*{productLength}" class="form-control form-control-sm" id="formProductLength"/>
+				      							<input type="text" th:field="*{productLength}" class="form-control form-control-sm" id="formProductLength" maxlength="10"/>
 				      						</div>
 				      					</div>
 				      				</div>
@@ -73,7 +73,7 @@
 					      				<div class="d-flex align-items-baseline">	
 					      					<label for="formProductWidth" class="col-sm-2 col-form-label fw-bold">Width:</label>
 					      					<div class="col-sm-10">
-					      						<input type="text" th:field="*{productWidth}" class="form-control form-control-sm" id="formProductWidth"/>
+					      						<input type="text" th:field="*{productWidth}" class="form-control form-control-sm" id="formProductWidth" maxlength="10"/>
 					      					</div>
 					      				</div>	
 				      				</div>
@@ -81,7 +81,7 @@
 					      				<div class="d-flex align-items-baseline">
 					      					<label for="formProductHeight" class="col-sm-2 col-form-label fw-bold">Height:</label>
 					      					<div class="col-sm-10">
-					      						<input type="text" th:field="*{productHeight}" class="form-control form-control-sm" id="formProductHeight"/>
+					      						<input type="text" th:field="*{productHeight}" class="form-control form-control-sm" id="formProductHeight" maxlength="10"/>
 					      					</div>
 					      				</div>
 				      				</div>
@@ -89,7 +89,7 @@
 					      				<div class="d-flex align-items-baseline">
 					      					<label for="formProductWeight" class="col-sm-2 col-form-label fw-bold">Weight:</label>
 					      					<div class="col-sm-10">
-					      						<input type="text" th:field="*{productWeight}" class="form-control form-control-sm" id="formProductWeight"/>
+					      						<input type="text" th:field="*{productWeight}" class="form-control form-control-sm" id="formProductWeight" maxlength="10"/>
 					      					</div>
 					      				</div>	
 				      				</div>
@@ -100,35 +100,35 @@
 		      					<!-- Name, Type, Product ID, Manufacturer, Country -->
 				      			<div class="col">
 				      				<div class="mb-3 row">
-					      				<div class="d-flex align-items-baseline">
+					      				<div class="d-flex align-items-baseline has-validation">
 					      					<label for="formProductName" class="col-sm-2 col-form-label fw-bold" style="width:55px;">Name:</label>
 					      					<div class="col-sm-10" style="width:305px;">
-					      						<input type="text" th:field="*{productName}" class="form-control form-control-sm" id="formProductName"/>
+					      						<input type="text" th:field="*{productName}" class="form-control form-control-sm" id="formProductName" maxlength="70" required/>
 					      					</div>
 					      				</div>	
 				      				</div>
 				      				<div class="mb-3 row">
-					      				<div class="d-flex align-items-baseline">
+					      				<div class="d-flex align-items-baseline has-validation">
 					      					<label for="formProductType" class="col-sm-2 col-form-label fw-bold" style="width:55px;">Type:</label>
 					      					<div class="col-sm-10" style="width:305px;">
-					      						<input type="text" th:field="*{productType}" class="form-control form-control-sm" id="formProductType"/>
+					      						<input type="text" th:field="*{productType}" class="form-control form-control-sm" id="formProductType" maxlength="70" required/>
 					      					</div>
 					      				</div>	
 				      				</div>
 				      				<div class="mb-3 row">
-					      				<div class="d-flex align-items-baseline">
+					      				<div class="d-flex align-items-baseline has-validation">
 					      					<label for="formProductId" class="col-sm-3 col-form-label fw-bold" style="width:85px;">Product ID:</label>
 					      					<div class="col-sm-9 ms-auto" style="width:275px;">
-					      						<input type="text" th:field="*{productId}" class="form-control form-control-sm" id="formProductId"/>
+					      						<input type="text" th:field="*{productId}" class="form-control form-control-sm" id="formProductId" maxlength="70" required/>
 					      					</div>
 					      				</div>	
 				      				</div>
 									<div class="mb-3 row">
-										<div class="d-flex align-items-baseline">
+										<div class="d-flex align-items-baseline has-validation">
 					      					<label for="formProductManufacturer" class="col-sm-3 col-form-label fw-bold" style="width:105px;">Manufacturer:</label>
 					      					<div class="col-sm-9" style="width:255px;">
 					      						<input type="text" th:field="*{productManufacturer}" class="form-control form-control-sm" 
-					      							   id="formProductManufacturer"/>
+					      							   id="formProductManufacturer" maxlength="70" required/>
 					      					</div>
 					      				</div>	
 				      				</div>
@@ -153,7 +153,7 @@
 										<label for="productDescription" class="form-label fw-bold">Description:</label>
 										<textarea th:field="*{productDescription}" class="form-control" id="productDescription" rows="9"
 												  placeholder="Characteristics; links to manuals, instructions, catalogues, drawings, etc."
-												  style="resize: none; font-size: 14px;">
+												  style="resize: none; font-size: 14px;" maxlength="500">
 										</textarea>	
 									</div>
 		      					</div>

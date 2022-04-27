@@ -1,15 +1,15 @@
 CREATE TABLE IF NOT EXISTS users (
 	id 		   SERIAL PRIMARY KEY,
-	username   VARCHAR(30) UNIQUE NOT NULL,
+	username   VARCHAR(30) NOT NULL,
 	password   VARCHAR(70),
-	enabled    SMALLINT NOT NULL DEFAULT 1,
-	authority  VARCHAR(30) NOT NULL DEFAULT 'ROLE_USER',
+	enabled    SMALLINT NOT NULL,
+	authority  VARCHAR(30) NOT NULL,
 	first_name VARCHAR(50) NOT NULL,
 	last_name  VARCHAR(50) NOT NULL,
 	department VARCHAR(70) NOT NULL,
 	position   VARCHAR(70) NOT NULL,
-	phone 	   VARCHAR(25),
-	email 	   VARCHAR(70) UNIQUE
+	phone 	   VARCHAR(25) NOT NULL,
+	email 	   VARCHAR(70) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS inventory_cards (
@@ -18,10 +18,10 @@ CREATE TABLE IF NOT EXISTS inventory_cards (
 	class 				 VARCHAR(200) NOT NULL,
 	created_at 			 TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	user_id 			 INTEGER REFERENCES users(id),
-	product_id 			 VARCHAR(70) UNIQUE NOT NULL,
+	product_id 			 VARCHAR(70) NOT NULL,
 	product_name 		 VARCHAR(70) NOT NULL,
 	product_type 		 VARCHAR(70) NOT NULL,
-	product_image 		 VARCHAR(70),
+	product_image 		 TEXT,
 	product_manufacturer VARCHAR(70) NOT NULL,
 	product_country 	 VARCHAR(70) NOT NULL,
 	product_length 		 VARCHAR(10),
