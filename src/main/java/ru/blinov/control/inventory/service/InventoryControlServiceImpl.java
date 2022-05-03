@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,52 @@ public class InventoryControlServiceImpl implements InventoryControlService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
+	//User
+	
+	@Override
+	public Page<User> findAllUsers(int page, int size) {	
+		return userRepository.findAll(PageRequest.of(page, size));
+	}
+
+	@Override
+	public User findUserById(int id) {
+		
+		Optional<User> user = userRepository.findById(id);
+
+		return user.get();
+	}
+	
+	@Override
+	public User findUserByUsername(String username) {
+		return userRepository.findByUsername(username);
+	}
+
+	@Override
+	public void saveUser(User user) {
+		
+		user.setPassword(passwordEncoder.encode("123"));
+		
+		userRepository.save(user);
+	}
+
+	@Override
+	public void deleteInventoryCardUser(User user) {
+		
+		List<InventoryCard> inventoryCards = inventoryCardRepository.findAllByUser(user);
+		
+		for(int i = 0; i < inventoryCards.size(); i++) {
+			inventoryCards.get(i).setUser(null);
+		}	
+	}
+	
+	@Override
+	public void deleteUserById(int id) {	
+		userRepository.deleteById(id);
+	}
+	
 	//Inventory card
 	
 	@Override
@@ -39,46 +86,13 @@ public class InventoryControlServiceImpl implements InventoryControlService {
 	@Override
 	public InventoryCard findInventoryCardById(int id) {
 		
-		Optional<InventoryCard> result = inventoryCardRepository.findById(id);
-		InventoryCard inventoryCard = null;
+		Optional<InventoryCard> inventoryCard = inventoryCardRepository.findById(id);
 		
-		if(result.isPresent()) {
-			inventoryCard = result.get();
-		}
-		else {
-			throw new RuntimeException();
-		}
-		
-		return inventoryCard;
-	}
-
-	@Override
-	public void saveInventoryCard(InventoryCard inventoryCard) {		
-		inventoryCardRepository.save(inventoryCard);
-	}
-
-	@Override
-	public void deleteInventoryCardById(int id) {		
-		inventoryCardRepository.deleteById(id);
+		return inventoryCard.get();
 	}
 	
 	@Override
-	public void deleteImageFromDirectory(String fileName, String folderName) {
-
-		Path deleteFile = Paths.get("./src/main/resources/static/images/products/" + folderName + "/" + fileName);
-		Path deleteFolder = Paths.get("./src/main/resources/static/images/products/" + folderName);
-
-		try {
-			Files.delete(deleteFile);
-			Files.delete(deleteFolder);
-		} catch (IOException e) {}
-		
-	}
-	
-	@Override
-	public void setInventoryCardIdentifier(InventoryCard inventoryCard) {
-		
-		String identifier = IdentifierGenerator.randomIdentifier();
+	public void setInventoryCardIdentifier(InventoryCard inventoryCard, String identifier) {
 		
 		while(true) {
 			if(inventoryCardRepository.existsByIdentifier(identifier)) {
@@ -101,56 +115,32 @@ public class InventoryControlServiceImpl implements InventoryControlService {
 	}
 	
 	@Override
-	public void deleteInventoryCardUser(User user) {
-		
-		List<InventoryCard> inventoryCards = inventoryCardRepository.findAllByUser(user);
-		
-		for(int i = 0; i < inventoryCards.size(); i++) {
-			inventoryCards.get(i).setUser(null);
-		}	
-	}
-	
-	@Override
 	public void copyProductImage(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc) {
 		InventoryFileHandler.copyProductImage(inventoryCard, multipartFile, imageSrc);
 	}
-	
-	//User
-	
-	@Override
-	public Page<User> findAllUsers(int page, int size) {	
-		return userRepository.findAll(PageRequest.of(page, size));
-	}
 
 	@Override
-	public User findUserById(int id) {
-		
-		Optional<User> result = userRepository.findById(id);
-		User user = null;
-		
-		if(result.isPresent()) {
-			user = result.get();
+	public void saveInventoryCard(InventoryCard inventoryCard) {		
+		inventoryCardRepository.save(inventoryCard);
+	}
+	
+	@Override
+	public void deleteInventoryCardById(int id) {		
+		inventoryCardRepository.deleteById(id);
+	}
+	
+	@Override
+	public void deleteImageFromDirectory(String fileName, String folderName) {
+
+		Path deleteFile = Paths.get("./src/main/resources/static/images/products/" + folderName + "/" + fileName);
+		Path deleteFolder = Paths.get("./src/main/resources/static/images/products/" + folderName);
+
+		try {
+			Files.delete(deleteFile);
+			Files.delete(deleteFolder);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		else {
-			throw new RuntimeException();
-		}
-		
-		return user;
 	}
 
-	@Override
-	public void saveUser(User user) {	
-		userRepository.save(user);
-	}
-
-	@Override
-	public void deleteUserById(int id) {	
-		userRepository.deleteById(id);
-	}
-	
-	@Override
-	public User findUserByUsername(String username) {
-		return userRepository.findByUsername(username);
-	}
-	
 }

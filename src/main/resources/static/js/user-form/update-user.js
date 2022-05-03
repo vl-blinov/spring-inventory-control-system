@@ -9,7 +9,6 @@
 		$.get(href, function(user) {
 			$('.modal-body #formUserId').val(user.id);
 			$('.modal-body #formUsername').val(user.username);
-			$('.modal-body #formPassword').val('123');
 			$('.modal-body #formFirstName').val(user.firstName);
 			$('.modal-body #formLastName').val(user.lastName);
 			$('.modal-body #formDepartment').val(user.department);

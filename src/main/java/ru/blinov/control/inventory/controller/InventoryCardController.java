@@ -19,6 +19,7 @@ import com.neovisionaries.i18n.CountryCode;
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.enums.InventoryCardClass;
 import ru.blinov.control.inventory.service.InventoryControlService;
+import ru.blinov.control.inventory.util.IdentifierGenerator;
 
 @Controller
 @RequestMapping("/amics")
@@ -40,7 +41,7 @@ public class InventoryCardController {
 		model.addAttribute("countries", CountryCode.values());
 		model.addAttribute("inventoryCardClasses", InventoryCardClass.values());
 		
-		return "/inventory/catalogue";
+		return "inventory/catalogue";
 	}
 	
 	@GetMapping("/view")
@@ -55,7 +56,7 @@ public class InventoryCardController {
 									@RequestParam("imageSrc") String imageSrc,
 									Principal principal) throws IOException {
 
-		inventoryControlService.setInventoryCardIdentifier(inventoryCard);
+		inventoryControlService.setInventoryCardIdentifier(inventoryCard, IdentifierGenerator.randomIdentifier());
 		
 		inventoryControlService.setInventoryCardUser(inventoryCard, principal.getName());
 

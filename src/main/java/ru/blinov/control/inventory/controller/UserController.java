@@ -3,7 +3,6 @@ package ru.blinov.control.inventory.controller;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,15 +26,12 @@ public class UserController {
 	@Autowired
 	private InventoryControlService inventoryControlService;
 	
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
-	
 	@GetMapping("/profile")
 	public String showUserProfile(Model model, Principal principal) {
 		
 		model.addAttribute("user", inventoryControlService.findUserByUsername(principal.getName()));
 		
-		return "/users/user-profile";
+		return "users/user-profile";
 	}
 	
 	@GetMapping("/list")
@@ -51,7 +47,7 @@ public class UserController {
 		model.addAttribute("authorities", Authority.values());
 		model.addAttribute("enabled", Enabled.values());
 		
-		return "/users/list-users";
+		return "users/list-users";
 	}
 	
 	@GetMapping("/find")
@@ -62,9 +58,7 @@ public class UserController {
 	
 	@PostMapping("/save")
 	public String saveUser(@ModelAttribute("user") User user) {
-		
-		user.setPassword(passwordEncoder.encode("123"));
-		
+
 		inventoryControlService.saveUser(user);
 		
 		return "redirect:/amics/users/list";
