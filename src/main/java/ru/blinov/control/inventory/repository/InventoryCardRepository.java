@@ -1,4 +1,4 @@
-package ru.blinov.control.inventory.dao;
+package ru.blinov.control.inventory.repository;
 
 import java.util.List;
 

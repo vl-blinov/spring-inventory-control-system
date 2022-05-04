@@ -14,10 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import ru.blinov.control.inventory.dao.InventoryCardRepository;
-import ru.blinov.control.inventory.dao.UserRepository;
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.entity.User;
+import ru.blinov.control.inventory.repository.InventoryCardRepository;
+import ru.blinov.control.inventory.repository.UserRepository;
 import ru.blinov.control.inventory.util.IdentifierGenerator;
 import ru.blinov.control.inventory.util.InventoryFileHandler;
 

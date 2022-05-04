@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/amics")
 public class PageController {
 	
-	@GetMapping()
+	@GetMapping
 	public String showHomePage() {
 		return "home-page";
 	}

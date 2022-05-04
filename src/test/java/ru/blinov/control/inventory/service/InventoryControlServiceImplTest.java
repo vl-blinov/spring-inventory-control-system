@@ -26,7 +26,7 @@ import ru.blinov.control.inventory.enums.InventoryCardClass;
 import ru.blinov.control.inventory.enums.Position;
 import ru.blinov.control.inventory.util.IdentifierGenerator;
 
-@SpringBootTest()
+@SpringBootTest
 @Testcontainers
 public class InventoryControlServiceImplTest {
 	

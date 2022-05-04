@@ -5,13 +5,13 @@ public enum Enabled {
 	YES(1),
 	NO(0);
 	
-	private final int value;
+	private final Integer value;
 	
-	Enabled(int value) {
+	Enabled(Integer value) {
 		this.value = value;
 	}
 	
-	public int getValue() {
+	public Integer getValue() {
 		return value;
 	}
 	
