@@ -70,7 +70,7 @@ public class UserController {
 		inventoryControlService.deleteInventoryCardUser(inventoryControlService.findUserById(userId));
 		
 		inventoryControlService.deleteUserById(userId);
-		
+
 		return "redirect:/amics/users/list";
 	}
 

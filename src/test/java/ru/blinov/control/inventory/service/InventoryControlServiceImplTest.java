@@ -81,15 +81,15 @@ public class InventoryControlServiceImplTest {
 		//Arrange
 		User user = new User();
 		
-		user.setUsername("harrypotter");
+		user.setUsername("nolanrobertson");
 		user.setEnabled(Enabled.YES.getValue());
 		user.setAuthority(Authority.ROLE_USER.getName());
-		user.setFirstName("Harry");
-		user.setLastName("Potter");
+		user.setFirstName("Nolan");
+		user.setLastName("Roberston");
 		user.setDepartment(Department.PLANT_ENGINEERING.getName());
 		user.setPosition(Position.ENGINEER.getName());
 		user.setPhone("+353 1 325 0707");
-		user.setEmail("harrypotter@amics.com");
+		user.setEmail("nolanrobertson@amics.com");
 		
 		//Act
 		sut.saveUser(user);
@@ -205,14 +205,14 @@ public class InventoryControlServiceImplTest {
 		sut.setInventoryCardIdentifier(inventoryCard, IdentifierGenerator.randomIdentifier());
 		inventoryCard.setCreatedAt(ZonedDateTime.now());
 		sut.setInventoryCardUser(inventoryCard, "jackobrien");
-		inventoryCard.setProductId("GV2ME01");
+		inventoryCard.setProductId("GV2ME02");
 		inventoryCard.setProductName("Motor circuit breaker");
-		inventoryCard.setProductType("GV2ME01");
-		inventoryCard.setProductImage("GV2ME01.png");
+		inventoryCard.setProductType("GV2ME02");
+		inventoryCard.setProductImage("GV2ME02.png");
 		inventoryCard.setProductManufacturer("Schneider Electric");
 		inventoryCard.setProductCountry("France");
 		inventoryCard.setProductLength("78.5 mm");
-		inventoryCard.setProductWeight("45 mm");
+		inventoryCard.setProductWidth("45 mm");
 		inventoryCard.setProductHeight("89 mm");
 		inventoryCard.setProductWeight("0.26 kg");
 		inventoryCard.setProductDescription("Rated current: 0.16 A");
@@ -236,12 +236,3 @@ public class InventoryControlServiceImplTest {
 	}
 		
 }
-
-
-
-
-
-
-
-
-

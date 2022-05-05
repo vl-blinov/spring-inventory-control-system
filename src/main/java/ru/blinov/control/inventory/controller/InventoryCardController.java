@@ -29,7 +29,7 @@ public class InventoryCardController {
 	private InventoryControlService inventoryControlService;
 	
 	@GetMapping("/catalogue")
-	public String listInventoryCards(@RequestParam(defaultValue="0") int page, Model model, Principal principal) {
+	public String listInventoryCards(@RequestParam(defaultValue="0") int page, Principal principal, Model model) {
 
 		model.addAttribute("inventoryCards", inventoryControlService.findAllInventoryCards(page, 4));
 		model.addAttribute("currentPage", page);
@@ -46,13 +46,13 @@ public class InventoryCardController {
 	
 	@GetMapping("/view")
 	@ResponseBody
-	public InventoryCard viewInventoryCard(@RequestParam("inventoryCardId") int id) {
-		return inventoryControlService.findInventoryCardById(id);
+	public InventoryCard viewInventoryCard(@RequestParam("inventoryCardId") int inventoryCardId) {
+		return inventoryControlService.findInventoryCardById(inventoryCardId);
 	}
 	
 	@PostMapping("/save")
-	public String saveInventoryCard(@ModelAttribute("inventoryCard") InventoryCard inventoryCard,
-									@RequestParam("fileImage") MultipartFile multipartFile,
+	public String saveInventoryCard(@RequestParam("fileImage") MultipartFile multipartFile,
+									@ModelAttribute("inventoryCard") InventoryCard inventoryCard,
 									@RequestParam("imageSrc") String imageSrc,
 									Principal principal) throws IOException {
 
@@ -68,11 +68,11 @@ public class InventoryCardController {
 	}
 	
 	@GetMapping("/delete")
-	public String deleteInventoryCard(@RequestParam("inventoryCardId") int id, 
+	public String deleteInventoryCard(@RequestParam("inventoryCardId") int inventoryCardId, 
 						 			  @RequestParam("inventoryCardIdentifier") String identifier,
 						 			  @RequestParam("inventoryCardProductImage") String productImage) {
 		
-		inventoryControlService.deleteInventoryCardById(id);
+		inventoryControlService.deleteInventoryCardById(inventoryCardId);
 		
 		inventoryControlService.deleteImageFromDirectory(productImage, identifier);
 

@@ -49,34 +49,35 @@ public class UserControllerTest {
 	@MockBean
 	private InventoryControlService inventoryControlService;
 	
-	private User harryPotter() {
+	private User user() {
 		
-		User harryPotter = new User();
+		User user = new User();
 		
-		harryPotter.setUsername("harrypotter");
-		harryPotter.setEnabled(Enabled.YES.getValue());
-		harryPotter.setAuthority(Authority.ROLE_USER.getName());
-		harryPotter.setFirstName("Harry");
-		harryPotter.setLastName("Potter");
-		harryPotter.setDepartment(Department.PLANT_ENGINEERING.getName());
-		harryPotter.setPosition(Position.ENGINEER.getName());
-		harryPotter.setPhone("+353 1 325 0707");
-		harryPotter.setEmail("harrypotter@amics.com");
+		user.setId(1);
+		user.setUsername("nolanrobertson");
+		user.setEnabled(Enabled.YES.getValue());
+		user.setAuthority(Authority.ROLE_USER.getName());
+		user.setFirstName("Nolan");
+		user.setLastName("Robertson");
+		user.setDepartment(Department.PLANT_ENGINEERING.getName());
+		user.setPosition(Position.ENGINEER.getName());
+		user.setPhone("+353 1 325 0707");
+		user.setEmail("nolanrobertson@amics.com");
 		
-		return harryPotter;
+		return user;
 	}
 	
 	@Test
 	public void testShowUserProfile() throws Exception {
 		
+		User user = user();
+		
 		Principal principal = new Principal() {
 			@Override
 			public String getName() {
-				return "harrypotter";
+				return "nolanrobertson";
 			}
 		};
-		
-		User user = harryPotter();
 		
 		when(inventoryControlService.findUserByUsername(principal.getName())).thenReturn(user);
 
@@ -89,55 +90,48 @@ public class UserControllerTest {
 	@Test
 	public void testlistUsers() throws Exception {
 
-		User user = harryPotter();
-
+		User user = user();
 		Page<User> users = new PageImpl<>(Lists.newArrayList(user));
 		
 		when(inventoryControlService.findAllUsers(0, 8)).thenReturn(users);	
 
-		mockMvc.perform(get("/amics/users/list"))
+		mockMvc.perform(get("/amics/users/list").param("page", "0"))
+			   .andExpect(status().isOk())
 			   .andExpect(model().attributeExists("users"))
 			   .andExpect(model().attributeExists("currentPage"))
 			   .andExpect(model().attributeExists("user"))
 			   .andExpect(model().attributeExists("departments"))
 			   .andExpect(model().attributeExists("positions"))
 			   .andExpect(model().attributeExists("authorities"))
-			   .andExpect(model().attributeExists("enabled"));
+			   .andExpect(model().attributeExists("enabled"))
+			   .andExpect(view().name("users/list-users"));
 	}
 
 	@Test
 	public void testFindUser() throws Exception {
 		
-		User user = harryPotter();
+		User user = user();
 		
 		when(inventoryControlService.findUserById(1)).thenReturn(user);
 		
 		mockMvc.perform(get("/amics/users/find").param("userId", "1"))
 			   .andExpect(status().isOk())
-			   .andExpect(jsonPath("$.username").value("harrypotter"))
+			   .andExpect(jsonPath("$.id").value("1"))
+			   .andExpect(jsonPath("$.username").value("nolanrobertson"))
 			   .andExpect(jsonPath("$.enabled").value(Enabled.YES.getValue()))
 			   .andExpect(jsonPath("$.authority").value(Authority.ROLE_USER.getName()))
-			   .andExpect(jsonPath("$.firstName").value("Harry"))
-			   .andExpect(jsonPath("$.lastName").value("Potter"))
+			   .andExpect(jsonPath("$.firstName").value("Nolan"))
+			   .andExpect(jsonPath("$.lastName").value("Robertson"))
 			   .andExpect(jsonPath("$.department").value(Department.PLANT_ENGINEERING.getName()))
 			   .andExpect(jsonPath("$.position").value(Position.ENGINEER.getName()))
 			   .andExpect(jsonPath("$.phone").value("+353 1 325 0707"))
-			   .andExpect(jsonPath("$.email").value("harrypotter@amics.com"));
+			   .andExpect(jsonPath("$.email").value("nolanrobertson@amics.com"));
 	}
 
 	@Test
 	public void testSaveUser() throws Exception {
 		
-		mockMvc.perform(post("/amics/users/save")
-			   .param("username", "harrypotter")
-			   .param("enabled", Enabled.YES.getValue().toString())
-			   .param("authority", Authority.ROLE_USER.getName())
-			   .param("firstName", "Harry")
-			   .param("lastName", "Potter")
-			   .param("department", Department.PLANT_ENGINEERING.getName())
-			   .param("position", Position.ENGINEER.getName())
-			   .param("phone", "+353 1 325 0707")
-			   .param("email", "harrypotter@amics.com"))
+		mockMvc.perform(post("/amics/users/save").flashAttr("user", user()))
 			   .andExpect(status().is3xxRedirection())
 			   .andExpect(view().name("redirect:/amics/users/list"));
 	}
