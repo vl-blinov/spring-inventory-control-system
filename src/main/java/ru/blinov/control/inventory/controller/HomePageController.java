@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/amics")
-public class PageController {
+public class HomePageController {
 	
 	@GetMapping
 	public String showHomePage() {

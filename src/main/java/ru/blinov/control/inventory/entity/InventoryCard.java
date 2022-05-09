@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -232,11 +231,11 @@ public class InventoryCard {
 	@Transient
 	public String getProductImagePath() {
 		
-		if(productImage == null || identifier == null) {
+		if(productImage == null) {
 			return null;
 		}
 		
-		return "/src/main/resources/static/images/products/" + identifier + "/" + productImage;	
+		return "/src/main/resources/images/products/" + identifier + "/" + productImage;	
 	}
 	
 }

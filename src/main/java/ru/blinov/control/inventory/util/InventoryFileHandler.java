@@ -9,47 +9,57 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
 
 public class InventoryFileHandler {
 	
-	public static void copyProductImage(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc) {
+	public static void copyProductImage(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc) throws IOException {
 		
 		String fileName = null;
 		InputStream inputStream = null;
 
-		String uploadDirectory = "./src/main/resources/static/images/products/" + inventoryCard.getIdentifier();
-		Path uploadPath = Paths.get(uploadDirectory);
+		Path uploadPath = Paths.get("./src/main/resources/images/products/" + inventoryCard.getIdentifier());
+
+		Files.createDirectories(uploadPath);
 		
-		try {
-			
-			if(!Files.exists(uploadPath)) {
-				Files.createDirectories(uploadPath);
-			}
-			
-			if(!multipartFile.isEmpty()) {
-				fileName = multipartFile.getOriginalFilename();
-				inputStream = multipartFile.getInputStream();
-			}
-			else {	
-				File fileToCopy = new File("." + imageSrc);
-				fileName = fileToCopy.getName();
-				Path sourcePath = Paths.get(fileToCopy.getAbsolutePath());
-				inputStream = Files.newInputStream(sourcePath, StandardOpenOption.READ);
-			}
-			
-			Path filePath = uploadPath.resolve(fileName);
-			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-			
-			inputStream.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(!multipartFile.isEmpty()) {
+			fileName = multipartFile.getOriginalFilename();
+			inputStream = multipartFile.getInputStream();
+		}
+		else {	
+			File fileToCopy = new File("." + imageSrc);
+			fileName = fileToCopy.getName();
+			Path sourcePath = Paths.get(fileToCopy.getAbsolutePath());
+			inputStream = Files.newInputStream(sourcePath, StandardOpenOption.READ);
 		}
 		
+		Path filePath = uploadPath.resolve(fileName);
+		
+		Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+		
+		inputStream.close();
+		
 		inventoryCard.setProductImage(fileName);
+	}
+	
+	public static void deleteProductImageFromDirectory(String folderName) throws IOException {
+			FileUtils.forceDelete(new File("./src/main/resources/images/products/" + folderName));
+	}
+	
+	public static void populateDirectoryWithProductImages() throws IOException {
+		
+		File cleanOut = new File("./src/main/resources/images/products");
+		File source = new File("./src/main/resources/static/images-source/");
+		File resource = new File("./src/main/resources/images");
+		
+		if(cleanOut.exists()) {
+			FileUtils.forceDelete(cleanOut);
+		}
+		
+		FileUtils.copyDirectory(source, resource);
 	}
 
 }

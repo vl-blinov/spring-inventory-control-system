@@ -19,7 +19,6 @@ import com.neovisionaries.i18n.CountryCode;
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.enums.InventoryCardClass;
 import ru.blinov.control.inventory.service.InventoryControlService;
-import ru.blinov.control.inventory.util.IdentifierGenerator;
 
 @Controller
 @RequestMapping("/amics")
@@ -51,30 +50,22 @@ public class InventoryCardController {
 	}
 	
 	@PostMapping("/save")
-	public String saveInventoryCard(@RequestParam("fileImage") MultipartFile multipartFile,
-									@ModelAttribute("inventoryCard") InventoryCard inventoryCard,
+	public String saveInventoryCard(@ModelAttribute("inventoryCard") InventoryCard inventoryCard,
+									@RequestParam("fileImage") MultipartFile fileImage,
 									@RequestParam("imageSrc") String imageSrc,
-									Principal principal) throws IOException {
-
-		inventoryControlService.setInventoryCardIdentifier(inventoryCard, IdentifierGenerator.randomIdentifier());
+									Principal principal
+									) throws IOException {
 		
-		inventoryControlService.setInventoryCardUser(inventoryCard, principal.getName());
-
-		inventoryControlService.copyProductImage(inventoryCard, multipartFile, imageSrc);
-		
-		inventoryControlService.saveInventoryCard(inventoryCard);
+		inventoryControlService.saveInventoryCard(inventoryCard, fileImage, imageSrc, principal);
 		
 		return "redirect:/amics/catalogue";
 	}
 	
 	@GetMapping("/delete")
 	public String deleteInventoryCard(@RequestParam("inventoryCardId") int inventoryCardId, 
-						 			  @RequestParam("inventoryCardIdentifier") String identifier,
-						 			  @RequestParam("inventoryCardProductImage") String productImage) {
+						 			  @RequestParam("inventoryCardImageFolder") String inventoryCardImageFolder) throws IOException {
 		
-		inventoryControlService.deleteInventoryCardById(inventoryCardId);
-		
-		inventoryControlService.deleteImageFromDirectory(productImage, identifier);
+		inventoryControlService.deleteInventoryCardById(inventoryCardId, inventoryCardImageFolder);
 
 		return "redirect:/amics/catalogue";
 	}

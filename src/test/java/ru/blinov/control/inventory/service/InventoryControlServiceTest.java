@@ -1,15 +1,26 @@
 package ru.blinov.control.inventory.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertThrows;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.security.Principal;
 import java.time.ZonedDateTime;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +35,11 @@ import ru.blinov.control.inventory.enums.Department;
 import ru.blinov.control.inventory.enums.Enabled;
 import ru.blinov.control.inventory.enums.InventoryCardClass;
 import ru.blinov.control.inventory.enums.Position;
-import ru.blinov.control.inventory.util.IdentifierGenerator;
+import ru.blinov.control.inventory.util.InventoryFileHandler;
 
 @SpringBootTest
 @Testcontainers
-public class InventoryControlServiceImplTest {
+public class InventoryControlServiceTest {
 	
 	@Autowired
 	private InventoryControlService sut;
@@ -48,28 +59,39 @@ public class InventoryControlServiceImplTest {
 	@Test
 	public void Should_find_all_users_and_show_them_on_one_page() {
 
+		//Arrange
+		int currentPageNumber = 0;
+		int pageSize = 30;
+		int numberOfAllUsers = 24;
+		
 		//Act
-		Page<User> result = sut.findAllUsers(0, 24);
+		Page<User> result = sut.findAllUsers(currentPageNumber, pageSize);
 		
 		//Assert
-		assertThat(result).size().isEqualTo(24);
+		assertThat(result).size().isEqualTo(numberOfAllUsers);
 	}
 
 	@Test
 	public void Should_find_a_user_by_given_id() {
 		
+		//Arrange
+		int userId = 1;
+		
 		//Act
-		User result = sut.findUserById(1);
+		User result = sut.findUserById(userId);
 		
 		//Assert
-		assertThat(result.getId()).isEqualTo(1);
+		assertThat(result.getId()).isEqualTo(userId);
 	}
 
 	@Test
 	public void Should_find_a_user_by_given_username() {
-
+		
+		//Arrange
+		String username = "jackobrien";
+		
 		//Act
-		User result = sut.findUserByUsername("jackobrien");
+		User result = sut.findUserByUsername(username);
 		
 		//Assert
 		assertThat(result.getUsername()).isEqualTo("jackobrien");
@@ -115,100 +137,67 @@ public class InventoryControlServiceImplTest {
 		//Assert
 		assertThat(sut.findUserById(1).getPhone()).isEqualTo(newPhone);
 	}
-	
-	@Test
-	@Transactional
-	public void Should_delete_a_given_user_from_all_inventory_cards_created_by_this_user() {
-		
-		//Arrange
-		InventoryCard inventoryCard = sut.findInventoryCardById(1);
-		User user = inventoryCard.getUser();
-		
-		//Act
-		sut.deleteInventoryCardUser(user);
-
-		//Assert
-		assertThat(inventoryCard.getUser()).isNull();
-	}
 
 	@Test
 	@Transactional
 	public void Should_delete_a_user_by_given_id() {
-
+		
+		//Arrange
+		int userId = 4;
+		InventoryCard inventoryCard = sut.findInventoryCardById(1);
+		
 		//Act
-		sut.deleteUserById(1);
+		sut.deleteUserById(userId);
 
 		//Assert
-		assertThrows(NoSuchElementException.class, () -> sut.findUserById(1));
+		assertThrows(NoSuchElementException.class, () -> sut.findUserById(userId));
+		assertThat(inventoryCard.getUser()).isNull();
 	}
 	
 	//Inventory card
 
 	@Test
 	public void Should_find_all_inventory_cards_and_show_them_on_one_page() {
-
+		
+		//Arrange
+		int currentPageNumber = 0;
+		int pageSize = 30;
+		int numberOfAllInventoryCards = 20;
+		
 		//Act
-		Page<InventoryCard> result = sut.findAllInventoryCards(0, 20);
+		Page<InventoryCard> result = sut.findAllInventoryCards(currentPageNumber, pageSize);
 		
 		//Assert
-		assertThat(result).size().isEqualTo(20);
+		assertThat(result).size().isEqualTo(numberOfAllInventoryCards);
 	}
 
 	@Test
 	public void Should_find_an_inventory_card_by_given_id() {
 		
+		//Arrange
+		int inventoryCardId = 1;
+		
 		//Act
-		InventoryCard result = sut.findInventoryCardById(1);
+		InventoryCard result = sut.findInventoryCardById(inventoryCardId);
 		
 		//Assert
 		assertThat(result.getId()).isEqualTo(1);
 	}
-	
-	@Test
-	@Transactional
-	public void Should_set_a_unique_identifier_for_a_new_inventory_card() {
-		
-		//Arrange
-		InventoryCard inventoryCard = sut.findInventoryCardById(1);
-		String identifier = inventoryCard.getIdentifier();
-		
-		InventoryCard newInventoryCard = new InventoryCard();
-		
-		//Act
-		sut.setInventoryCardIdentifier(newInventoryCard, identifier);
-		
-		//Assert
-		assertThat(newInventoryCard.getIdentifier()).isNotEqualTo(identifier);
-	}
-
-	@Test
-	public void Should_set_a_user_for_a_new_inventory_card() {
-		
-		//Arrange
-		InventoryCard inventoryCard = new InventoryCard();
-
-		//Act
-		sut.setInventoryCardUser(inventoryCard, "jackobrien");
-
-		//Assert
-		assertThat(inventoryCard.getUser().getUsername()).isEqualTo("jackobrien");
-	}
 
 	@Test
 	@Transactional
-	public void Should_insert_a_new_inventory_card() {
+	public void Should_insert_a_new_inventory_card() throws IOException {
 		
 		//Arrange
+		FileUtils.forceDelete(new File("./src/main/resources/images/"));
+
 		InventoryCard inventoryCard = new InventoryCard();
 		
 		inventoryCard.setClassName(InventoryCardClass.ELECTRICAL.getName());
-		sut.setInventoryCardIdentifier(inventoryCard, IdentifierGenerator.randomIdentifier());
 		inventoryCard.setCreatedAt(ZonedDateTime.now());
-		sut.setInventoryCardUser(inventoryCard, "jackobrien");
 		inventoryCard.setProductId("GV2ME02");
 		inventoryCard.setProductName("Motor circuit breaker");
 		inventoryCard.setProductType("GV2ME02");
-		inventoryCard.setProductImage("GV2ME02.png");
 		inventoryCard.setProductManufacturer("Schneider Electric");
 		inventoryCard.setProductCountry("France");
 		inventoryCard.setProductLength("78.5 mm");
@@ -217,22 +206,45 @@ public class InventoryControlServiceImplTest {
 		inventoryCard.setProductWeight("0.26 kg");
 		inventoryCard.setProductDescription("Rated current: 0.16 A");
 		
+		Path filePath = Paths.get("./src/test/resources/images/GV2ME02.png");
+		
+		InputStream inputStream = Files.newInputStream(filePath, StandardOpenOption.READ);
+		
+		MockMultipartFile multipartFile = new MockMultipartFile("fileImage", filePath.getFileName().toString(), 
+																MediaType.MULTIPART_FORM_DATA_VALUE, inputStream);
+		
+		String imageSrc = null;
+		
+		Principal principal = new Principal() {
+			@Override
+			public String getName() {
+				return "jackobrien";
+			}
+		};
+		
 		//Act
-		sut.saveInventoryCard(inventoryCard);
+		sut.saveInventoryCard(inventoryCard, multipartFile, imageSrc, principal);
 		
 		//Assert
 		assertThat(inventoryCard.getId()).isNotEqualTo(0);
+		assertThat(inventoryCard.getUser().getUsername()).isEqualTo("jackobrien");
 	}
 	
 	@Test
 	@Transactional
-	public void Should_delete_an_inventory_card_by_given_id() {
+	public void Should_delete_an_inventory_card_by_given_id() throws IOException {
+		
+		//Arrange
+		InventoryFileHandler.populateDirectoryWithProductImages();
+		
+		int inventoryCardId = 1;
+		String productImageFolder = sut.findInventoryCardById(inventoryCardId).getIdentifier();
 
 		//Act
-		sut.deleteInventoryCardById(1);
+		sut.deleteInventoryCardById(inventoryCardId, productImageFolder);
 
 		//Assert
-		assertThrows(NoSuchElementException.class, () -> sut.findInventoryCardById(1));
+		assertThrows(NoSuchElementException.class, () -> sut.findInventoryCardById(inventoryCardId));
 	}
 		
 }

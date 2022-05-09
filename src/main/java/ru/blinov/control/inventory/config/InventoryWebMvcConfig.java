@@ -13,12 +13,12 @@ public class InventoryWebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		
-		Path inventoryCardUploadDirectory = Paths.get("./src/main/resources/static/images/products");
+		Path inventoryCardImageUploadDirectory = Paths.get("./src/main/resources/images/products");
 		
-		String inventoryCardUploadPath = inventoryCardUploadDirectory.toFile().getAbsolutePath();
+		String inventoryCardImageUploadPath = inventoryCardImageUploadDirectory.toFile().getAbsolutePath();
 		
-		registry.addResourceHandler("/src/main/resources/static/images/products/**")
-				.addResourceLocations("file:/" + inventoryCardUploadPath + "/");
+		registry.addResourceHandler("/src/main/resources/images/products/**")
+				.addResourceLocations("file:/" + inventoryCardImageUploadPath + "/");
 	}
 	
 }

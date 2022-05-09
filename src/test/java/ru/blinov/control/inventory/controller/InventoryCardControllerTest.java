@@ -1,5 +1,4 @@
 package ru.blinov.control.inventory.controller;
-
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -184,11 +183,10 @@ public class InventoryCardControllerTest {
 	
 	@Test
 	public void testDeleteInventoryCard() throws Exception {
-		
+
 		mockMvc.perform(get("/amics/delete")
 			   .param("inventoryCardId", "1")
-			   .param("inventoryCardIdentifier", "12h09357e724")
-			   .param("inventoryCardProductImage", "GV2ME02.png"))
+			   .param("inventoryCardImageFolder", "12h09357e724"))
 			   .andExpect(status().is3xxRedirection())
 			   .andExpect(view().name("redirect:/amics/catalogue"));
 	}

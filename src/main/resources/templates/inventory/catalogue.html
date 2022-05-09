@@ -104,8 +104,7 @@
 							<hr class="mt-1 mb-1">
 							<div>  				
 								<a th:href="@{/amics/delete(inventoryCardId=${inventoryCard.id}, 
-															inventoryCardIdentifier=${inventoryCard.identifier},
-															inventoryCardProductImage=${inventoryCard.productImage})}"
+															inventoryCardImageFolder=${inventoryCard.identifier})}"
 								   class="btn btn-danger btn-sm"
 								   onclick="if (!(confirm('Delete this card?'))) return false">
 									<i class="bi bi-trash3"></i>
