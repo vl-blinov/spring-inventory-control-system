@@ -22,8 +22,10 @@ public class InventoryFileHandler {
 		InputStream inputStream = null;
 
 		Path uploadPath = Paths.get("./src/main/resources/images/products/" + inventoryCard.getIdentifier());
-
-		Files.createDirectories(uploadPath);
+		
+		if(!Files.exists(uploadPath)) {
+			Files.createDirectories(uploadPath);
+		}
 		
 		if(!multipartFile.isEmpty()) {
 			fileName = multipartFile.getOriginalFilename();
@@ -45,8 +47,8 @@ public class InventoryFileHandler {
 		inventoryCard.setProductImage(fileName);
 	}
 	
-	public static void deleteProductImageFromDirectory(String folderName) throws IOException {
-			FileUtils.forceDelete(new File("./src/main/resources/images/products/" + folderName));
+	public static void deleteProductImageFromDirectory(String folderName) {
+			FileUtils.deleteQuietly(new File("./src/main/resources/images/products/" + folderName));
 	}
 	
 	public static void populateDirectoryWithProductImages() throws IOException {

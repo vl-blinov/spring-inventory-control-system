@@ -98,6 +98,7 @@ public class InventoryControlServiceTest {
 	}
 
 	@Test
+	@Transactional
 	public void Should_insert_a_new_user() {
 		
 		//Arrange

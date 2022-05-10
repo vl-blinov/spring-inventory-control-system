@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -79,10 +78,11 @@ public class InventoryCard {
 		
 	}
 
-	public InventoryCard(String identifier, String className, ZonedDateTime createdAt, User user,
-						 String productId, String productName, String productType, String productImage, String productManufacturer,
+	public InventoryCard(String identifier, String className, ZonedDateTime createdAt, User user, String productId,
+						 String productName, String productType, String productImage, String productManufacturer,
 						 String productCountry, String productLength, String productWidth, String productHeight,
 						 String productWeight, String productDescription) {
+		
 		this.identifier = identifier;
 		this.className = className;
 		this.createdAt = createdAt;
@@ -228,13 +228,12 @@ public class InventoryCard {
 		this.productDescription = productDescription;
 	}
 	
-	@Transient
 	public String getProductImagePath() {
 		
 		if(productImage == null) {
 			return null;
 		}
-		
+
 		return "/src/main/resources/images/products/" + identifier + "/" + productImage;	
 	}
 	

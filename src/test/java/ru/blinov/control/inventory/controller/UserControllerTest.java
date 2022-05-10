@@ -131,9 +131,11 @@ public class UserControllerTest {
 	@Test
 	public void testSaveUser() throws Exception {
 		
-		mockMvc.perform(post("/amics/users/save").flashAttr("user", user()))
-			   .andExpect(status().is3xxRedirection())
-			   .andExpect(view().name("redirect:/amics/users/list"));
+		String redirect = "redirect:/amics/users/list";
+		
+		mockMvc.perform(post("/amics/users/save").flashAttr("user", user()).param("redirect", redirect))
+		   .andExpect(status().is3xxRedirection())
+		   .andExpect(view().name(redirect));
 	}
 	
 	@Test

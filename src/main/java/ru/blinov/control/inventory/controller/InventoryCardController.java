@@ -63,7 +63,7 @@ public class InventoryCardController {
 	
 	@GetMapping("/delete")
 	public String deleteInventoryCard(@RequestParam("inventoryCardId") int inventoryCardId, 
-						 			  @RequestParam("inventoryCardImageFolder") String inventoryCardImageFolder) throws IOException {
+						 			  @RequestParam("inventoryCardImageFolder") String inventoryCardImageFolder) {
 		
 		inventoryControlService.deleteInventoryCardById(inventoryCardId, inventoryCardImageFolder);
 

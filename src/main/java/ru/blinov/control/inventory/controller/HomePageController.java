@@ -14,14 +14,3 @@ public class HomePageController {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-

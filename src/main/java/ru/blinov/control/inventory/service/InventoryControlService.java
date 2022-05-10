@@ -5,13 +5,12 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
@@ -35,12 +34,12 @@ public class InventoryControlService {
 	
 	//User
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public Page<User> findAllUsers(int page, int size) {	
 		return userRepository.findAll(PageRequest.of(page, size));
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public User findUserById(int id) {
 		
 		Optional<User> user = userRepository.findById(id);
@@ -48,7 +47,7 @@ public class InventoryControlService {
 		return user.get();
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public User findUserByUsername(String username) {
 		return userRepository.findByUsername(username);
 	}
@@ -68,7 +67,7 @@ public class InventoryControlService {
 		
 		userRepository.deleteById(id);
 	}
-	
+
 	private void deleteInventoryCardUser(int id) {
 		
 		User user = findUserById(id);
@@ -82,12 +81,12 @@ public class InventoryControlService {
 	
 	//Inventory card
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public Page<InventoryCard> findAllInventoryCards(int page, int size) {
 		return inventoryCardRepository.findAll(PageRequest.of(page, size));
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public InventoryCard findInventoryCardById(int id) {
 		
 		Optional<InventoryCard> inventoryCard = inventoryCardRepository.findById(id);
@@ -106,7 +105,7 @@ public class InventoryControlService {
 		
 		inventoryCardRepository.save(inventoryCard);
 	}
-	
+
 	private void setInventoryCardIdentifier(InventoryCard inventoryCard) {
 		
 		String identifier = IdentifierGenerator.randomIdentifier();
@@ -133,9 +132,8 @@ public class InventoryControlService {
 	private void copyProductImage(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc) throws IOException {
 		InventoryFileHandler.copyProductImage(inventoryCard, multipartFile, imageSrc);
 	}
-	
-	@Transactional
-	public void deleteInventoryCardById(int id, String folderName) throws IOException {
+
+	public void deleteInventoryCardById(int id, String folderName) {
 		
 		InventoryFileHandler.deleteProductImageFromDirectory(folderName);
 		

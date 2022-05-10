@@ -1,6 +1,5 @@
 package ru.blinov.control.inventory.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -65,8 +64,9 @@ public class User {
 		
 	}
 
-	public User(String username, String password, int enabled, String authority, String firstName,
-			String lastName, String department, String position, String phone, String email) {
+	public User(String username, String password, int enabled, String authority, String firstName, String lastName,
+				String department, String position, String phone, String email) {
+		
 		this.username = username;
 		this.password = password;
 		this.enabled = enabled;
@@ -166,23 +166,13 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
+	
 	public List<InventoryCard> getInventoryCards() {
 		return inventoryCards;
 	}
 
 	public void setInventoryCards(List<InventoryCard> inventoryCards) {
 		this.inventoryCards = inventoryCards;
-	}
-	
-	public void addInventoryCard(InventoryCard inventoryCard) {
-		
-		if(inventoryCards == null) {
-			inventoryCards = new ArrayList<>();
-		}
-		
-		inventoryCards.add(inventoryCard);	
-		inventoryCard.setUser(this);
 	}
 	
 	public String getFullName() {

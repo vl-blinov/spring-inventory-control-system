@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+				xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 	<head>
 	    <!-- Required meta tags -->
@@ -101,14 +102,16 @@
 										   style="width: 30px; height: 30px;">
 								</div>
 							</div>
-							<hr class="mt-1 mb-1">
-							<div>  				
-								<a th:href="@{/amics/delete(inventoryCardId=${inventoryCard.id}, 
-															inventoryCardImageFolder=${inventoryCard.identifier})}"
-								   class="btn btn-danger btn-sm"
-								   onclick="if (!(confirm('Delete this card?'))) return false">
-									<i class="bi bi-trash3"></i>
-								</a>
+							<div sec:authorize="hasRole('MASTER')">
+								<hr class="mt-1 mb-1">
+								<div>  				
+									<a th:href="@{/amics/delete(inventoryCardId=${inventoryCard.id}, 
+																inventoryCardImageFolder=${inventoryCard.identifier})}"
+									   class="btn btn-danger btn-sm"
+									   onclick="if (!(confirm('Delete this card?'))) return false">
+										<i class="bi bi-trash3"></i>
+									</a>
+								</div>
 							</div>
 						</td>
 						<td>

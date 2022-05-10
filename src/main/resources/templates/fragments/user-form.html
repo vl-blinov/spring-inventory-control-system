@@ -5,8 +5,8 @@
 		<div class="modal-dialog modal-dialog-centered" role="document">
 	   		<div class="modal-content">
 				
-				<form action="#" th:action="@{/amics/users/save}" th:object="${user}" method="POST">
-	
+				<form action="#" th:action="@{/amics/users/save/(redirect='redirect:/amics/users/list')}" th:object="${user}" method="POST">
+					
 		    		<!-- Modal header -->
 		      		<div class="modal-header">
 		        		<div class="container">

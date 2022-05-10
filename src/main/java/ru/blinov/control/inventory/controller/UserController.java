@@ -57,11 +57,11 @@ public class UserController {
 	}
 	
 	@PostMapping("/save")
-	public String saveUser(@ModelAttribute("user") User user) {
-
+	public String saveUser(@ModelAttribute("user") User user, @RequestParam("redirect") String redirect) {
+		
 		inventoryControlService.saveUser(user);
 		
-		return "redirect:/amics/users/list";
+		return redirect;
 	}
 	
 	@GetMapping("/delete")

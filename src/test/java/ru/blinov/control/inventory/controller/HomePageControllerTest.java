@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(controllers = HomePageController.class, 
 			excludeAutoConfiguration = SecurityAutoConfiguration.class,
 			excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebSecurityConfigurer.class))
-public class PageControllerTest {
+public class HomePageControllerTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
