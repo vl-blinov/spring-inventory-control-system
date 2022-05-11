@@ -9,9 +9,9 @@
 		<relativePath/>
 	</parent>
 	<groupId>ru.blinov</groupId>
-	<artifactId>control.inventory</artifactId>
+	<artifactId>spring-inventory-control-system</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>control.inventory</name>
+	<name>spring-inventory-control-system</name>
 	<description>Advanced Manufacturing Inventory Control System</description>
 	<properties>
 		<java.version>17</java.version>
