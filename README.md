@@ -6,21 +6,35 @@ There are far less functionality that the real application has, but some of it i
 ## About The Project
 
 ### How It Works In Production
+Roughly speaking, the process looks like this:
+1. An employee initiates a purchasing process and makes a request for budget approval for a desired product.
+1. When everything is approved, it is time for creating an inventory card with full information about the product in an e-catalogue of the ICS (inventory control system).
+1. After that, the employee makes a PR (purchase requisition) in an ERP (enterprise resource planning) system which is connected to the ICS.
+1. A specialist from the Purchasing Department checks the PR and organize further steps of the purchasing process.
+1. At the end, when the product is purchased and delivered, it must be registered in the ERP system.
 
+Each employee of the organization who has access to the ICS can view all equipment, accessories, tools and materials registered in the catalogue.
+It is very useful to do before your own purchasing as it might help to find a product similar to what you need that has been already purchased.
+Instead of long searching in the Internet you can contact with your colleague who created a card with a desired product and discuss its quality, characteristics, vendors, prices etc.
+In case the product is exactly what is needed you just skip creation of a new inventory card and go to the next step.
+If the product has similar characteristics you can reuse an existing inventory card with small changes.
+Both cases will definitely save your time and speed up the process.
 
 ### What We Have So Far
-Currently the application has only one main functionality which is to register all equipment and accessories
-that will be purchased for further use at a manufacturing plant.
+Currently the application has only one main functionality which is to register equipment and accessories of specific categories
+(Air conditioning, Electrical, Electronics, Gas, Heating, Hydraulics, Mechanical, Ventilation) that will be purchased for further use at a manufacturing plant.
 
-### Organization Structure
-The chart shows an organization structure with departments using AMICS.
+### Organizational Chart
+The diagram shows the structure of an organization with departments and employees.
+
 ![org-structure](src/main/resources/static/images-readme/org-structure.png)
-There are three roles with authorities used:
-1. [ROLE_ADMIN]: create/view/reuse inventory cards, create/view/update/delete users, view/update profile
-1. [ROLE_MASTER]: create/view/reuse/delete inventory cards, view/update profile
-1. [ROLE_USER]: create/view/reuse inventory cards, view/update profile
 
-### Folder Structures
+There are three roles with authorities used:
+1. [ROLE_ADMIN]: create/view/reuse inventory cards, create/view/update/delete users, view/update profile.
+1. [ROLE_MASTER]: create/view/reuse/delete inventory cards, view/update profile.
+1. [ROLE_USER]: create/view/reuse inventory cards, view/update profile.
+
+### Folder Structure
 
 ```bash
 │   .gitignore
@@ -29,7 +43,6 @@ There are three roles with authorities used:
 │   mvnw.cmd
 │   pom.xml
 │   README.md
-│
 │
 └───src
    ├───main
@@ -85,6 +98,7 @@ There are three roles with authorities used:
    │       │   │   index.html
    │       │   │
    │       │   ├───images-readme
+   │       │   │       db-diagram.png
    │       │   │       org-structure.png
    │       │   │
    │       │   ├───images-source
@@ -202,6 +216,8 @@ There are three roles with authorities used:
                    GV2ME02.png
 ```
 
+### Database Diagram
+![org-structure](src/main/resources/static/images-readme/db-diagram.png)
 
 ### Built With
 
@@ -217,4 +233,13 @@ There are three roles with authorities used:
 
 
 ## Acknowledgements
+
+
+
+
+
+
+
+
+
 
