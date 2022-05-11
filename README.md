@@ -18,9 +18,9 @@ The chart shows an organization structure with departments using inventory contr
 ![](src/main/resources/static/images-readme/org-structure.png)
 
 There are three authorities used:
-1.[ROLE_ADMIN]
-1.[ROLE_MASTER]
-1.[ROLE_USER]
+1. [ROLE_ADMIN]
+1. [ROLE_MASTER]
+1. [ROLE_USER]
 
 
 
