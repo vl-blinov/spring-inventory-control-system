@@ -5,13 +5,13 @@ There are far less functionality that the real application has, but some of it i
 
 ## About The Project
 
-### How It Works In Production
+### How It Works
 Roughly speaking, the process looks like this:
 1. An employee initiates a purchasing process and makes a request for budget approval for a desired product.
-1. When everything is approved, it is time for creating an inventory card with full information about the product in an e-catalogue of the ICS (inventory control system).
-1. After that, the employee makes a PR (purchase requisition) in an ERP (enterprise resource planning) system which is connected to the ICS.
-1. A specialist from the Purchasing Department checks the PR and organize further steps of the purchasing process.
-1. At the end, when the product is purchased and delivered, it must be registered in the ERP system.
+2. When everything is approved, it is time for creating a new inventory card with full information about the product in an e-catalogue of the ICS (inventory control system).
+3. After that, the employee makes a PR (purchase requisition) in an ERP (enterprise resource planning) system which is connected to the ICS.
+4. A specialist from the Purchasing Department checks the PR and organize further steps of the purchasing process.
+5. At the end, when the product is purchased and delivered, it must be registered in the ERP system.
 
 Each employee of the organization who has access to the ICS can view all equipment, accessories, tools and materials registered in the catalogue.
 It is very useful to do before your own purchasing as it might help to find a product similar to what you need that has been already purchased.
@@ -22,17 +22,17 @@ Both cases will definitely save your time and speed up the process.
 
 ### What We Have So Far
 Currently the application has only one main functionality which is to register equipment and accessories of specific categories
-(Air conditioning, Electrical, Electronics, Gas, Heating, Hydraulics, Mechanical, Ventilation) that will be purchased for further use at a manufacturing plant.
+(Air conditioning, Electrical, Electronics, Gas, Heating, Hydraulics, Mechanical, Ventilation).
 
 ### Organizational Chart
-The diagram shows the structure of an organization with departments and employees.
+The diagram shows the structure of an organization with departments, employees and their roles.
 
 ![org-structure](src/main/resources/static/images-readme/org-structure.png)
 
 There are three roles with authorities used:
 1. [ROLE_ADMIN]: create/view/reuse inventory cards, create/view/update/delete users, view/update profile.
-1. [ROLE_MASTER]: create/view/reuse/delete inventory cards, view/update profile.
-1. [ROLE_USER]: create/view/reuse inventory cards, view/update profile.
+2. [ROLE_MASTER]: create/view/reuse/delete inventory cards, view/update profile.
+3. [ROLE_USER]: create/view/reuse inventory cards, view/update profile.
 
 ### Built With
 
@@ -40,6 +40,7 @@ There are three roles with authorities used:
 * Spring Security
 * Thymeleaf
 * Bootstrap
+* JQuery
 * PostgreSQL
 * Flyway
 * Docker
@@ -229,18 +230,80 @@ There are three roles with authorities used:
 ### Database Diagram
 ![org-structure](src/main/resources/static/images-readme/db-diagram.png)
 
-
 ## Getting Started
 
+### Prerequisites
+The following items should be installed in your system:
+* JDK 17 or newer
+* Eclipse IDE
+* Git command line tool (https://help.github.com/articles/set-up-git)
+* Docker (https://docs.docker.com/get-docker)
+
+### Steps
+
+1) On the command line:
+
+```bash
+	git clone https://github.com/vl-blinov/spring-inventory-control-system.git
+```
+2) Inside Eclipse IDE:
+
+```
+	File -> Import -> Maven -> Existing Maven Projects
+```
+3) On the command line in the project root directory:
+
+```bash
+	docker-compose up
+```
+
+4) Navigate to AMICS:
+
+```
+	Visit [http://localhost:8080] in your browser
+```
+
+5) Log in as one of the following users (password: "123" for everyone):
+
+| #  | Username         | Role        | 
+| -- | ---------------- | ----------- |
+| 1  | jackobrien  		| ROLE_ADMIN  |
+| 2  | gracecarrol 		| ROLE_MASTER |
+| 3  | danielcollins    | ROLE_USER   |
+| 4  | conorfarrel      | ROLE_USER   |
+| 5  | noahoconnor      | ROLE_USER   |
+| 6  | finnmartin       | ROLE_USER   |
+| 7  | hannahcampbell   | ROLE_USER   |
+| 8  | alexodonnell     | ROLE_USER   |
+| 9  | ryanoneill       | ROLE_USER   |
+| 10 | gaelmccarthy     | ROLE_USER   |
+| 11 | roryhayes        | ROLE_USER   |
+| 12 | lorcanfitzgerald | ROLE_USER   |
+| 13 | quilloreilly     | ROLE_USER   |
+| 14 | chloeclarke      | ROLE_USER   |
+| 15 | briendoyle       | ROLE_USER   |
+| 16 | torinkennedy     | ROLE_USER   |
+| 17 | pauricgallagher  | ROLE_USER   |
+| 18 | saeranwilson     | ROLE_USER   |
+| 19 | kateburke        | ROLE_USER   |
+| 20 | charliejohnston  | ROLE_USER   |
+| 21 | liambrown        | ROLE_USER   |
+| 22 | adamflynn        | ROLE_USER   |
+| 23 | lukehealy        | ROLE_USER   |
+| 24 | haileyregan      | ROLE_USER   |
+
+## Important Notes
+
+1. Spring Security is used per se only for authorization.
+A password for all existing and newly created users is "123" by default.
+2. Postgres database runs inside of a docker container after "docker-compose up" command is executed.
+There is no need to install it locally.
+3. A separate test container with database is launched during the tests where required.
+4. Schema and data migration is implemented automatically by Flyway.
 
 ## Acknowledgements
 
-
-
-
-
-
-
-
-
-
+* [Spring & Hibernate Course](https://www.udemy.com/course/spring-hibernate-tutorial)
+* [PostgreSQL Course](https://www.udemy.com/course/sql-and-postgresql)
+* [Baeldung](https://www.baeldung.com)
+* [Bootstrap](https://getbootstrap.com)
