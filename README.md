@@ -256,14 +256,19 @@ The following items should be installed in your system:
 ```bash
 	docker-compose up
 ```
+4) Inside Eclipse IDE:
 
-4) Navigate to AMICS:
+```
+	src/main/java/ru.blinov.control.inventory/InventoryControlSystemApplication.java -> Run As -> Java Application
+```
+
+5) Navigate to AMICS:
 
 ```
 	Visit [http://localhost:8080] in your browser
 ```
 
-5) Log in as one of the following users (password: "123" for everyone):
+6) Log in as one of the following users (password: "123" for everyone):
 
 | #  | Username         | Role        | 
 | -- | ---------------- | ----------- |
