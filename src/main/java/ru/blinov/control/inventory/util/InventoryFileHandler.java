@@ -18,6 +18,10 @@ public class InventoryFileHandler {
 	
 	public static void copyProductImage(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc) throws IOException {
 		
+		if(multipartFile.isEmpty() && imageSrc.isEmpty()) {
+			return;
+		}
+
 		String fileName = null;
 		InputStream inputStream = null;
 
