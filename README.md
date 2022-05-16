@@ -305,6 +305,8 @@ A password for all existing and newly created users is "123" by default.
 There is no need to install it locally.
 3. A separate test container with database is launched during the tests where required.
 4. Schema and data migration is implemented automatically by Flyway.
+5. The images resource directory "src/main/resources/images/" is cleared out and then populated with images 
+from "src/main/resources/static/images-source/" images source directory before each running of the SpringApplication.
 
 ## Acknowledgements
 
