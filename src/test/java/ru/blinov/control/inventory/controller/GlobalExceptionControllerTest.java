@@ -36,11 +36,11 @@ import ru.blinov.control.inventory.enums.Position;
 import ru.blinov.control.inventory.util.IdentifierGenerator;
 
 /*
- * Spring Security must be disabled, 
- * otherwise consider defining a bean of type 'javax.sql.DataSource' in configuration and running docker container with postgres.
- * @WebMvcTest attributes:
- * excludeAutoConfiguration: disable SecurityAutoConfiguration ('user' with random password on the console);
- * excludeFilters: exclude SecurityConfing (extends WebSecurityConfigurerAdapter which implements WebSecurityConfigurer) during the component scanning.
+ * Spring Security must be disabled, because username, password and role are stored in a database.
+ * Otherwise consider defining a bean of type 'javax.sql.DataSource' in configuration and running docker container with PostgreSQL.
+ * Explanation of @WebMvcTest attributes:
+ * - excludeAutoConfiguration: disable SecurityAutoConfiguration ('user' with random password on the console);
+ * - excludeFilters: exclude SecurityConfing (extends WebSecurityConfigurerAdapter which implements WebSecurityConfigurer) during the component scanning.
  */
 
 @WebMvcTest(controllers = GlobalExceptionController.class, 
