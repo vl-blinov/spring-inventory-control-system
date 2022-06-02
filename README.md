@@ -109,6 +109,7 @@ There are three roles with authorities used:
    │       │   │   index.html
    │       │   │
    │       │   ├───images-readme
+   │       │   │       app-screenshot.png
    │       │   │       db-diagram.png
    │       │   │       org-structure.png
    │       │   │
@@ -296,6 +297,10 @@ The following items should be installed in your system:
 | 22 | adamflynn        | ROLE_USER   |
 | 23 | lukehealy        | ROLE_USER   |
 | 24 | haileyregan      | ROLE_USER   |
+
+7) Explore the application:
+
+![app-screenshot](src/main/resources/static/images-readme/app-screenshot.png)
 
 ## Important Notes
 
