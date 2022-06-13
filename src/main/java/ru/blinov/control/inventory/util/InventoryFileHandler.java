@@ -22,33 +22,48 @@ public class InventoryFileHandler {
 			return;
 		}
 
-		String fileName = null;
-		InputStream inputStream = null;
-
-		Path uploadPath = Paths.get("./src/main/resources/images/products/" + inventoryCard.getIdentifier());
+		Path uploadPath = Paths.get("./src/main/resources/images/products/" + inventoryCard.getIdentifier());	
+		Files.createDirectories(uploadPath);
 		
-		if(!Files.exists(uploadPath)) {
-			Files.createDirectories(uploadPath);
-		}
-		
-		if(!multipartFile.isEmpty()) {
-			fileName = multipartFile.getOriginalFilename();
-			inputStream = multipartFile.getInputStream();
-		}
-		else {	
-			File fileToCopy = new File("." + imageSrc);
-			fileName = fileToCopy.getName();
-			Path sourcePath = Paths.get(fileToCopy.getAbsolutePath());
-			inputStream = Files.newInputStream(sourcePath, StandardOpenOption.READ);
-		}
+		String fileName = getImageFileName(multipartFile, imageSrc);
+		InputStream inputStream = getImageFileInputStream(multipartFile, imageSrc);
 		
 		Path filePath = uploadPath.resolve(fileName);
-		
 		Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
 		
 		inputStream.close();
 		
 		inventoryCard.setProductImage(fileName);
+	}
+	
+	private static String getImageFileName(MultipartFile multipartFile, String imageSrc) {
+		
+		String fileName;
+		
+		if(!multipartFile.isEmpty()) {
+			fileName = multipartFile.getOriginalFilename();
+		}
+		else {	
+			File fileToCopy = new File("." + imageSrc);
+			fileName = fileToCopy.getName();
+		}
+
+		return fileName;
+	}
+	
+	private static InputStream getImageFileInputStream(MultipartFile multipartFile, String imageSrc) throws IOException {
+		
+		InputStream inputStream;
+		
+		if(!multipartFile.isEmpty()) {
+			inputStream = multipartFile.getInputStream();
+		}
+		else {
+			Path sourcePath = Paths.get(new File("." + imageSrc).getAbsolutePath());
+			inputStream = Files.newInputStream(sourcePath, StandardOpenOption.READ);
+		}
+		
+		return inputStream;
 	}
 	
 	public static void deleteProductImageFromDirectory(String folderName) {
