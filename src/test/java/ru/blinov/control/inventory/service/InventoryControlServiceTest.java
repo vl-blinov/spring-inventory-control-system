@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.Principal;
-import java.time.ZonedDateTime;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.io.FileUtils;
@@ -195,7 +194,6 @@ public class InventoryControlServiceTest {
 		InventoryCard inventoryCard = new InventoryCard();
 		
 		inventoryCard.setClassName(InventoryCardClass.ELECTRICAL.getName());
-		inventoryCard.setCreatedAt(ZonedDateTime.now());
 		inventoryCard.setProductId("GV2ME02");
 		inventoryCard.setProductName("Motor circuit breaker");
 		inventoryCard.setProductType("GV2ME02");

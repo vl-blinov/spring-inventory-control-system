@@ -78,15 +78,11 @@ public class InventoryCard {
 		
 	}
 
-	public InventoryCard(String identifier, String className, ZonedDateTime createdAt, User user, String productId,
-						 String productName, String productType, String productImage, String productManufacturer,
-						 String productCountry, String productLength, String productWidth, String productHeight,
-						 String productWeight, String productDescription) {
+	public InventoryCard(String className, String productId, String productName, String productType,
+			String productImage, String productManufacturer, String productCountry, String productLength,
+			String productWidth, String productHeight, String productWeight, String productDescription) {
 		
-		this.identifier = identifier;
 		this.className = className;
-		this.createdAt = createdAt;
-		this.user = user;
 		this.productId = productId;
 		this.productName = productName;
 		this.productType = productType;

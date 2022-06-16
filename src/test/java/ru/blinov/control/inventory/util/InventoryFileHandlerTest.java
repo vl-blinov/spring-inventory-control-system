@@ -10,7 +10,6 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.time.ZonedDateTime;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -30,7 +29,6 @@ public class InventoryFileHandlerTest {
 		
 		inventoryCard.setIdentifier("00h00000e000");
 		inventoryCard.setClassName(InventoryCardClass.ELECTRICAL.getName());
-		inventoryCard.setCreatedAt(ZonedDateTime.now());
 		inventoryCard.setProductId("GV2ME02");
 		inventoryCard.setProductName("Motor circuit breaker");
 		inventoryCard.setProductType("GV2ME02");

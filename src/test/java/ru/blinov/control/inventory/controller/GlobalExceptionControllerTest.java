@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.Principal;
-import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +26,7 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
-import ru.blinov.control.inventory.entity.User;
-import ru.blinov.control.inventory.enums.Authority;
-import ru.blinov.control.inventory.enums.Department;
-import ru.blinov.control.inventory.enums.Enabled;
 import ru.blinov.control.inventory.enums.InventoryCardClass;
-import ru.blinov.control.inventory.enums.Position;
-import ru.blinov.control.inventory.util.IdentifierGenerator;
 
 /*
  * Spring Security must be disabled, because username, password and role are stored in a database.
@@ -54,33 +47,11 @@ public class GlobalExceptionControllerTest {
 	@MockBean
 	private InventoryCardController inventoryCardController;
 	
-	private User user() {
-		
-		User user = new User();
-		
-		user.setId(1);
-		user.setUsername("nolanrobertson");
-		user.setEnabled(Enabled.YES.getValue());
-		user.setAuthority(Authority.ROLE_USER.getName());
-		user.setFirstName("Nolan");
-		user.setLastName("Robertson");
-		user.setDepartment(Department.PLANT_ENGINEERING.getName());
-		user.setPosition(Position.ENGINEER.getName());
-		user.setPhone("+353 1 325 0707");
-		user.setEmail("nolanrobertson@amics.com");
-		
-		return user;
-	}
-	
 	private InventoryCard inventoryCard() {
 		
 		InventoryCard inventoryCard = new InventoryCard();
 		
-		inventoryCard.setId(1);
 		inventoryCard.setClassName(InventoryCardClass.ELECTRICAL.getName());
-		inventoryCard.setIdentifier(IdentifierGenerator.randomIdentifier());
-		inventoryCard.setCreatedAt(ZonedDateTime.now());
-		inventoryCard.setUser(user());
 		inventoryCard.setProductId("GV2ME02");
 		inventoryCard.setProductName("Motor circuit breaker");
 		inventoryCard.setProductType("GV2ME02");
@@ -96,7 +67,7 @@ public class GlobalExceptionControllerTest {
 		return inventoryCard;
 	}
 	
-	private Principal principle() {
+	private Principal principal() {
 		
 		Principal principal = new Principal() {
 			@Override
@@ -122,7 +93,7 @@ public class GlobalExceptionControllerTest {
 		
 		String imageSrc = null;
 		
-		Principal principal = principle();
+		Principal principal = principal();
 
 		when(inventoryCardController.saveInventoryCard(inventoryCard, multipartFile, imageSrc, principal)).thenThrow(new IOException());
 

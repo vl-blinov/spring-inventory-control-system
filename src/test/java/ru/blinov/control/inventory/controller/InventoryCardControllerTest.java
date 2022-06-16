@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.Principal;
-import java.time.ZonedDateTime;
 
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
@@ -84,7 +83,6 @@ public class InventoryCardControllerTest {
 		inventoryCard.setId(1);
 		inventoryCard.setClassName(InventoryCardClass.ELECTRICAL.getName());
 		inventoryCard.setIdentifier(IdentifierGenerator.randomIdentifier());
-		inventoryCard.setCreatedAt(ZonedDateTime.now());
 		inventoryCard.setUser(user());
 		inventoryCard.setProductId("GV2ME02");
 		inventoryCard.setProductName("Motor circuit breaker");
