@@ -74,9 +74,7 @@ public class InventoryControlService {
 		
 		List<InventoryCard> inventoryCards = inventoryCardRepository.findAllByUser(user);
 		
-		for(int i = 0; i < inventoryCards.size(); i++) {
-			inventoryCards.get(i).setUser(null);
-		}	
+		inventoryCards.stream().forEach(inventoryCard -> inventoryCard.setUser(null));
 	}
 	
 	//Inventory card
@@ -122,15 +120,15 @@ public class InventoryControlService {
 		inventoryCard.setIdentifier(identifier);
 	}
 	
+	private void copyProductImage(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc) throws IOException {
+		InventoryFileHandler.copyProductImage(inventoryCard, multipartFile, imageSrc);
+	}
+	
 	private void setInventoryCardUser(InventoryCard inventoryCard, Principal principal) {
 
 		User user = userRepository.findByUsername(principal.getName());
 		
 		inventoryCard.setUser(user);
-	}
-	
-	private void copyProductImage(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc) throws IOException {
-		InventoryFileHandler.copyProductImage(inventoryCard, multipartFile, imageSrc);
 	}
 
 	public void deleteInventoryCardById(int id, String folderName) {
