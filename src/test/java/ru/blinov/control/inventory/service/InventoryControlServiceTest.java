@@ -14,6 +14,8 @@ import java.security.Principal;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,7 +36,6 @@ import ru.blinov.control.inventory.enums.Department;
 import ru.blinov.control.inventory.enums.Enabled;
 import ru.blinov.control.inventory.enums.InventoryCardClass;
 import ru.blinov.control.inventory.enums.Position;
-import ru.blinov.control.inventory.util.InventoryFileHandler;
 
 @SpringBootTest
 @Testcontainers
@@ -51,6 +52,16 @@ public class InventoryControlServiceTest {
 		registry.add("spring.datasource.url", container::getJdbcUrl);
 		registry.add("spring.datasource.username", container::getUsername);
 		registry.add("spring.datasource.password", container::getPassword);
+	}
+	
+	@AfterAll
+	public static void tearDown() throws IOException {
+
+		File directory = new File("./src/main/resources/images/products");
+		
+		if(directory.exists()) {
+			FileUtils.forceDelete(directory);
+		}
 	}
 	
 	//User
@@ -189,8 +200,6 @@ public class InventoryControlServiceTest {
 	public void Should_insert_a_new_inventory_card() throws IOException {
 		
 		//Arrange
-		FileUtils.forceDelete(new File("./src/main/resources/images/"));
-
 		InventoryCard inventoryCard = new InventoryCard();
 		
 		inventoryCard.setClassName(InventoryCardClass.ELECTRICAL.getName());
@@ -212,7 +221,7 @@ public class InventoryControlServiceTest {
 		MockMultipartFile multipartFile = new MockMultipartFile("fileImage", filePath.getFileName().toString(), 
 																MediaType.MULTIPART_FORM_DATA_VALUE, inputStream);
 		
-		String imageSrc = null;
+		String imageSrc = Strings.EMPTY;
 		
 		Principal principal = new Principal() {
 			@Override
@@ -234,8 +243,6 @@ public class InventoryControlServiceTest {
 	public void Should_delete_an_inventory_card_by_given_id() throws IOException {
 		
 		//Arrange
-		InventoryFileHandler.populateDirectoryWithProductImages();
-		
 		int inventoryCardId = 1;
 		String productImageFolder = sut.findInventoryCardById(inventoryCardId).getIdentifier();
 
