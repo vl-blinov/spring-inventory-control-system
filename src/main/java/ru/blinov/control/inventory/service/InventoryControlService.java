@@ -55,7 +55,6 @@ public class InventoryControlService {
 		return userRepository.findByUsername(username);
 	}
 	
-	@Transactional
 	@CacheEvict(value = "users", allEntries = true)
 	public void saveUser(User user) {
 		
@@ -137,8 +136,7 @@ public class InventoryControlService {
 		
 		inventoryCard.setUser(user);
 	}
-	
-	@Transactional
+
 	@CacheEvict(value = "inventoryCards", allEntries = true)
 	public void deleteInventoryCardById(int id, String folderName) {
 		
