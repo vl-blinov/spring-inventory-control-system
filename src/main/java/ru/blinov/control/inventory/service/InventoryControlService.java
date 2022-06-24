@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,6 +37,7 @@ public class InventoryControlService {
 	//User
 	
 	@Transactional(readOnly = true)
+	@Cacheable(value = "users")
 	public Page<User> findAllUsers(int page, int size) {	
 		return userRepository.findAll(PageRequest.of(page, size));
 	}
@@ -53,6 +56,7 @@ public class InventoryControlService {
 	}
 	
 	@Transactional
+	@CacheEvict(value = "users", allEntries = true)
 	public void saveUser(User user) {
 		
 		user.setPassword(passwordEncoder.encode("123"));
@@ -61,6 +65,7 @@ public class InventoryControlService {
 	}
 	
 	@Transactional
+	@CacheEvict(value = "users", allEntries = true)
 	public void deleteUserById(int id) {
 		
 		deleteInventoryCardUser(id);
@@ -80,6 +85,7 @@ public class InventoryControlService {
 	//Inventory card
 	
 	@Transactional(readOnly = true)
+	@Cacheable(value = "inventoryCards")
 	public Page<InventoryCard> findAllInventoryCards(int page, int size) {
 		return inventoryCardRepository.findAll(PageRequest.of(page, size));
 	}
@@ -93,6 +99,7 @@ public class InventoryControlService {
 	}
 	
 	@Transactional
+	@CacheEvict(value = "inventoryCards", allEntries = true)
 	public void saveInventoryCard(InventoryCard inventoryCard, MultipartFile multipartFile, String imageSrc, Principal principal) throws IOException {
 		
 		setInventoryCardIdentifier(inventoryCard);
@@ -130,7 +137,9 @@ public class InventoryControlService {
 		
 		inventoryCard.setUser(user);
 	}
-
+	
+	@Transactional
+	@CacheEvict(value = "inventoryCards", allEntries = true)
 	public void deleteInventoryCardById(int id, String folderName) {
 		
 		InventoryFileHandler.deleteProductImageFromDirectory(folderName);
