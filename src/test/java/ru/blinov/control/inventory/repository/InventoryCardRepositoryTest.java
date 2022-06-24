@@ -4,19 +4,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.entity.User;
+
+/*
+ * @Transactional - solve an issue with one-to-many lazy loading.
+ * JPA fetches a collection within a transaction when calling getInventoryCards() method.
+ */
 
 @SpringBootTest
 @Testcontainers
@@ -39,7 +43,6 @@ public class InventoryCardRepositoryTest {
 	}
 
 	@Test
-	@Transactional
 	public void Inventory_card_with_given_identifier_exists() {
 		
 		//Arrange

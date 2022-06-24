@@ -37,6 +37,10 @@ import ru.blinov.control.inventory.enums.Enabled;
 import ru.blinov.control.inventory.enums.InventoryCardClass;
 import ru.blinov.control.inventory.enums.Position;
 
+/*
+ * @Transactional - a transaction will be rolled back at the end of the test method regardless of it's outcome.
+ */
+
 @SpringBootTest
 @Testcontainers
 public class InventoryControlServiceTest {
