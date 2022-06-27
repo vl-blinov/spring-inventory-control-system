@@ -88,7 +88,7 @@ public class UserControllerTest {
 	}
 
 	@Test
-	public void testlistUsers() throws Exception {
+	public void testListUsers() throws Exception {
 
 		User user = user();
 		Page<User> users = new PageImpl<>(Lists.newArrayList(user));
