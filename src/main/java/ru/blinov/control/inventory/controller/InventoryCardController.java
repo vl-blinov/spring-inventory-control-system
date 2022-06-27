@@ -24,13 +24,19 @@ import ru.blinov.control.inventory.service.InventoryControlService;
 @RequestMapping("/amics")
 public class InventoryCardController {
 	
-	@Autowired
 	private InventoryControlService inventoryControlService;
+	
+	public static final int DEFAULT_INVENTORY_CARDS_PER_PAGE = 4;
+	
+	@Autowired
+	public InventoryCardController(InventoryControlService inventoryControlService) {
+		this.inventoryControlService = inventoryControlService;
+	}
 	
 	@GetMapping("/catalogue")
 	public String listInventoryCards(@RequestParam(defaultValue="0") int page, Principal principal, Model model) {
 
-		model.addAttribute("inventoryCards", inventoryControlService.findAllInventoryCards(page, 4));
+		model.addAttribute("inventoryCards", inventoryControlService.findAllInventoryCards(page, DEFAULT_INVENTORY_CARDS_PER_PAGE));
 		model.addAttribute("currentPage", page);
 		
 		model.addAttribute("inventoryCard", new InventoryCard());
@@ -53,8 +59,7 @@ public class InventoryCardController {
 	public String saveInventoryCard(@ModelAttribute("inventoryCard") InventoryCard inventoryCard,
 									@RequestParam("fileImage") MultipartFile fileImage,
 									@RequestParam("imageSrc") String imageSrc,
-									Principal principal
-									) throws IOException {
+									Principal principal) throws IOException {
 		
 		inventoryControlService.saveInventoryCard(inventoryCard, fileImage, imageSrc, principal);
 		

@@ -23,8 +23,14 @@ import ru.blinov.control.inventory.service.InventoryControlService;
 @RequestMapping("/amics/users")
 public class UserController {
 	
-	@Autowired
 	private InventoryControlService inventoryControlService;
+	
+	public static final int DEFAULT_USERS_PER_PAGE = 8;
+	
+	@Autowired
+	public UserController(InventoryControlService inventoryControlService) {
+		this.inventoryControlService = inventoryControlService;
+	}
 	
 	@GetMapping("/profile")
 	public String showUserProfile(Model model, Principal principal) {
@@ -37,7 +43,7 @@ public class UserController {
 	@GetMapping("/list")
 	public String listUsers(@RequestParam(defaultValue="0") int page, Model model) {
 		
-		model.addAttribute("users", inventoryControlService.findAllUsers(page, 8));
+		model.addAttribute("users", inventoryControlService.findAllUsers(page, DEFAULT_USERS_PER_PAGE));
 		model.addAttribute("currentPage", page);
 		
 		model.addAttribute("user", new User());
