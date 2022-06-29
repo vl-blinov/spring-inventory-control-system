@@ -3,7 +3,7 @@ services:
     container_name: postgres
     image: postgres:latest
     ports:
-      - "6543:5432"
+      - "6543:5432" #"host:container"
     environment:
       POSTGRES_DB: inventory_control_system
       POSTGRES_USER: inventory_control_system
