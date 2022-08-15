@@ -1,6 +1,7 @@
 package ru.blinov.control.inventory.controller;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -141,7 +142,7 @@ public class UserControllerTest {
 	@Test
 	public void testDeleteUser() throws Exception {
 		
-		mockMvc.perform(get("/amics/users/delete").param("userId", "1"))
+		mockMvc.perform(delete("/amics/users/delete").param("userId", "1"))
 			   .andExpect(status().is3xxRedirection())
 			   .andExpect(view().name("redirect:/amics/users/list"));	
 	}
