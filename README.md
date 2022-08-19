@@ -37,6 +37,7 @@ There are three roles with authorities used:
 ### Built With
 
 * Spring Boot
+* Spring Data JPA
 * Spring Security
 * Thymeleaf
 * Bootstrap
@@ -229,7 +230,7 @@ There are three roles with authorities used:
 ```
 
 ### Database Diagram
-![org-structure](src/main/resources/static/images-readme/db-diagram.png)
+![db-diagram](src/main/resources/static/images-readme/db-diagram.png)
 
 ## Getting Started
 
