@@ -1,6 +1,7 @@
 package ru.blinov.control.inventory.controller;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -11,17 +12,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.security.Principal;
 
+import javax.sql.DataSource;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.blinov.control.inventory.entity.User;
@@ -31,17 +31,8 @@ import ru.blinov.control.inventory.enums.Enabled;
 import ru.blinov.control.inventory.enums.Position;
 import ru.blinov.control.inventory.service.InventoryControlService;
 
-/*
- * Spring Security must be disabled, because username, password and role are stored in a database.
- * Otherwise consider defining a bean of type 'javax.sql.DataSource' in configuration and running docker container with PostgreSQL.
- * Explanation of @WebMvcTest attributes:
- * - excludeAutoConfiguration: disable SecurityAutoConfiguration ('user' with random password on the console);
- * - excludeFilters: exclude SecurityConfing (extends WebSecurityConfigurerAdapter which implements WebSecurityConfigurer) during the component scanning.
- */
 
-@WebMvcTest(controllers = UserController.class, 
-			excludeAutoConfiguration = SecurityAutoConfiguration.class,
-			excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebSecurityConfigurer.class))
+@WebMvcTest(controllers = UserController.class)
 public class UserControllerTest {
 	
 	@Autowired
@@ -49,6 +40,9 @@ public class UserControllerTest {
 	
 	@MockBean
 	private InventoryControlService inventoryControlService;
+	
+	@MockBean
+    private DataSource dataSource;
 	
 	private User user() {
 		
@@ -69,6 +63,7 @@ public class UserControllerTest {
 	}
 	
 	@Test
+	@WithMockUser(username = "nolanrobertson", password = "123", roles = "USER")
 	public void testShowUserProfile() throws Exception {
 		
 		User user = user();
@@ -89,6 +84,7 @@ public class UserControllerTest {
 	}
 
 	@Test
+	@WithMockUser(username = "jackobrien", password = "123", roles = "ADMIN")
 	public void testListUsers() throws Exception {
 
 		User user = user();
@@ -109,6 +105,7 @@ public class UserControllerTest {
 	}
 
 	@Test
+	@WithMockUser(username = "jackobrien", password = "123", roles = "ADMIN")
 	public void testFindUser() throws Exception {
 		
 		User user = user();
@@ -128,21 +125,28 @@ public class UserControllerTest {
 			   .andExpect(jsonPath("$.phone").value("+353 1 325 0707"))
 			   .andExpect(jsonPath("$.email").value("nolanrobertson@amics.com"));
 	}
-
+	
 	@Test
+	@WithMockUser(username = "jackobrien", password = "123", roles = "ADMIN")
 	public void testSaveUser() throws Exception {
 		
 		String redirect = "redirect:/amics/users/list";
 		
-		mockMvc.perform(post("/amics/users/save").flashAttr("user", user()).param("redirect", redirect))
+		mockMvc.perform(post("/amics/users/save")
+				.with(csrf())
+				.flashAttr("user", user())
+				.param("redirect", redirect))
 		   .andExpect(status().is3xxRedirection())
 		   .andExpect(view().name(redirect));
 	}
 	
 	@Test
+	@WithMockUser(username = "jackobrien", password = "123", roles = "ADMIN")
 	public void testDeleteUser() throws Exception {
 		
-		mockMvc.perform(delete("/amics/users/delete").param("userId", "1"))
+		mockMvc.perform(delete("/amics/users/delete")
+				.with(csrf())
+				.param("userId", "1"))
 			   .andExpect(status().is3xxRedirection())
 			   .andExpect(view().name("redirect:/amics/users/list"));	
 	}

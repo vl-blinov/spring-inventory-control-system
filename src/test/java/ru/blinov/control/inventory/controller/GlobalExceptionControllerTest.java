@@ -13,32 +13,21 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.Principal;
 
+import javax.sql.DataSource;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.enums.InventoryCardClass;
 
-/*
- * Spring Security must be disabled, because username, password and role are stored in a database.
- * Otherwise consider defining a bean of type 'javax.sql.DataSource' in configuration and running docker container with PostgreSQL.
- * Explanation of @WebMvcTest attributes:
- * - excludeAutoConfiguration: disable SecurityAutoConfiguration ('user' with random password on the console);
- * - excludeFilters: exclude SecurityConfing (extends WebSecurityConfigurerAdapter which implements WebSecurityConfigurer) during the component scanning.
- */
-
-@WebMvcTest(controllers = GlobalExceptionController.class, 
-			excludeAutoConfiguration = SecurityAutoConfiguration.class,
-			excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebSecurityConfigurer.class))
+@WebMvcTest(controllers = GlobalExceptionController.class)
 public class GlobalExceptionControllerTest {
 	
 	@Autowired
@@ -46,6 +35,9 @@ public class GlobalExceptionControllerTest {
 	
 	@MockBean
 	private InventoryCardController inventoryCardController;
+	
+	@MockBean
+    private DataSource dataSource;
 	
 	private InventoryCard inventoryCard() {
 		
@@ -80,6 +72,7 @@ public class GlobalExceptionControllerTest {
 	}
 	
 	@Test
+	@WithMockUser(username = "jackobrien", password = "123", roles = "ADMIN")
 	public void testExceptionHandler() throws Exception {
 		
 		InventoryCard inventoryCard = inventoryCard();

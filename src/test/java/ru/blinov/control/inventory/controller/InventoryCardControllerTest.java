@@ -1,5 +1,6 @@
 package ru.blinov.control.inventory.controller;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -14,19 +15,18 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.Principal;
 
+import javax.sql.DataSource;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -40,17 +40,7 @@ import ru.blinov.control.inventory.enums.Position;
 import ru.blinov.control.inventory.service.InventoryControlService;
 import ru.blinov.control.inventory.util.IdentifierGenerator;
 
-/*
- * Spring Security must be disabled, because username, password and role are stored in a database.
- * Otherwise consider defining a bean of type 'javax.sql.DataSource' in configuration and running docker container with PostgreSQL.
- * Explanation of @WebMvcTest attributes:
- * - excludeAutoConfiguration: disable SecurityAutoConfiguration ('user' with random password on the console);
- * - excludeFilters: exclude SecurityConfing (extends WebSecurityConfigurerAdapter which implements WebSecurityConfigurer) during the component scanning.
- */
-
-@WebMvcTest(controllers = InventoryCardController.class, 
-			excludeAutoConfiguration = SecurityAutoConfiguration.class,
-			excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = WebSecurityConfigurer.class))
+@WebMvcTest(controllers = InventoryCardController.class)
 public class InventoryCardControllerTest {
 	
 	@Autowired
@@ -58,6 +48,9 @@ public class InventoryCardControllerTest {
 	
 	@MockBean
 	private InventoryControlService inventoryControlService;
+	
+	@MockBean
+    private DataSource dataSource;
 	
 	private User user() {
 		
@@ -113,6 +106,7 @@ public class InventoryCardControllerTest {
 	}
 	
 	@Test
+	@WithMockUser(username = "nolanrobertson", password = "123", roles = "USER")
 	public void testListInventoryCards() throws Exception {
 		
 		Principal principal = principle();
@@ -134,6 +128,7 @@ public class InventoryCardControllerTest {
 	}
 	
 	@Test
+	@WithMockUser(username = "nolanrobertson", password = "123", roles = "USER")
 	public void testViewInventoryCard() throws Exception {
 		
 		when(inventoryControlService.findInventoryCardById(1)).thenReturn(inventoryCard());
@@ -157,8 +152,9 @@ public class InventoryCardControllerTest {
 			   .andExpect(jsonPath("$.productWeight").value("0.26 kg"))
 			   .andExpect(jsonPath("$.productDescription").value("Rated current: 0.16 A"));
 	}
-	
+
 	@Test
+	@WithMockUser(username = "nolanrobertson", password = "123", roles = "USER")
 	public void testSaveInventoryCard() throws Exception {
 		
 		Path filePath = Paths.get("./src/test/resources/images/GV2ME02.png");
@@ -172,22 +168,26 @@ public class InventoryCardControllerTest {
 		
 		Principal principal = principle();
 		
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/amics/save").file(multipartFile)
-						.flashAttr("inventoryCard", inventoryCard)
-						.param("imageSrc", "")
-						.principal(principal))
-						.andExpect(status().is3xxRedirection())
-						.andExpect(view().name("redirect:/amics/catalogue"));
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/amics/save")
+				.file(multipartFile)
+				.with(csrf())
+				.flashAttr("inventoryCard", inventoryCard)
+				.param("imageSrc", "")
+				.principal(principal))
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/amics/catalogue"));
 	}
 	
 	@Test
+	@WithMockUser(username = "gracecarrol", password = "123", roles = "MASTER")
 	public void testDeleteInventoryCard() throws Exception {
 
 		mockMvc.perform(delete("/amics/delete")
+				.with(csrf())
 			   .param("inventoryCardId", "1")
 			   .param("inventoryCardImageFolder", "12h09357e724"))
-			   .andExpect(status().is3xxRedirection())
-			   .andExpect(view().name("redirect:/amics/catalogue"));
+		.andExpect(status().is3xxRedirection())
+		.andExpect(view().name("redirect:/amics/catalogue"));
 	}
 
 }
