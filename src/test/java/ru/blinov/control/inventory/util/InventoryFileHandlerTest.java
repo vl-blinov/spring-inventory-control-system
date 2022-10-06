@@ -80,7 +80,7 @@ public class InventoryFileHandlerTest {
 		MockMultipartFile multipartFile = new MockMultipartFile("fileImage", fileToCopyPath.getFileName().toString(), 
 																MediaType.MULTIPART_FORM_DATA_VALUE, inputStream);
 		
-		String emptyImageSrc = null;
+		String emptyImageSrc = "";
 
 		//Act
 		InventoryFileHandler.copyProductImage(inventoryCard, multipartFile, emptyImageSrc);
