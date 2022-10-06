@@ -6,10 +6,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -17,13 +18,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.entity.User;
 
-/*
- * @Transactional - solve an issue with one-to-many lazy loading.
- * JPA fetches a collection within a transaction when calling getInventoryCards() method.
- */
-
-@SpringBootTest
+@DataJpaTest
 @Testcontainers
+@TestPropertySource(locations = "classpath:application-test.properties")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class InventoryCardRepositoryTest {
 	
 	@Autowired
@@ -43,10 +41,10 @@ public class InventoryCardRepositoryTest {
 	}
 
 	@Test
-	public void Inventory_card_with_given_identifier_exists() {
+	public void Inventory_card_with_the_given_identifier_exists() {
 		
 		//Arrange
-		String identifier = sut.findById(1).get().getIdentifier();
+		String identifier = "67h95110e543";
 		
 		//Act
 		boolean result = sut.existsByIdentifier(identifier);
@@ -56,8 +54,20 @@ public class InventoryCardRepositoryTest {
 	}
 	
 	@Test
-	@Transactional
-	public void Should_find_all_inventory_cards_created_by_given_user() {
+	public void Inventory_card_with_the_given_identifier_does_not_exist() {
+		
+		//Arrange
+		String identifier = "00h00000e000";
+		
+		//Act
+		boolean result = sut.existsByIdentifier(identifier);
+		
+		//Assert
+		assertThat(result).isFalse();
+	}
+	
+	@Test
+	public void Should_find_all_inventory_cards_created_by_the_given_user() {
 		
 		//Arrange		
 		User user = userRepository.findById(6).get();
@@ -69,5 +79,4 @@ public class InventoryCardRepositoryTest {
 		//Assert
 		assertThat(result).hasSize(numberOfInventoryCardsCreatedByUser);	
 	}
-
 }
