@@ -2,6 +2,9 @@ package ru.blinov.control.inventory.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,52 +14,46 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.Principal;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.util.Strings;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ru.blinov.control.inventory.entity.InventoryCard;
 import ru.blinov.control.inventory.entity.User;
-import ru.blinov.control.inventory.enums.Authority;
-import ru.blinov.control.inventory.enums.Department;
-import ru.blinov.control.inventory.enums.Enabled;
-import ru.blinov.control.inventory.enums.InventoryCardClass;
-import ru.blinov.control.inventory.enums.Position;
+import ru.blinov.control.inventory.repository.InventoryCardRepository;
+import ru.blinov.control.inventory.repository.UserRepository;
 
-/*
- * @Transactional - a transaction will be rolled back at the end of the test method regardless of it's outcome.
- */
-
-@SpringBootTest
-@Testcontainers
+@ExtendWith(MockitoExtension.class)
 public class InventoryControlServiceTest {
 	
-	@Autowired
-	private InventoryControlService sut;
+	@Mock
+	private UserRepository userRepository;
 	
-	@Container
-	private static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:latest");
-														  
-	@DynamicPropertySource
-	public static void overrideProperties(DynamicPropertyRegistry registry) {
-		registry.add("spring.datasource.url", container::getJdbcUrl);
-		registry.add("spring.datasource.username", container::getUsername);
-		registry.add("spring.datasource.password", container::getPassword);
-	}
+	@Mock
+	private InventoryCardRepository inventoryCardRepository;
+	
+	@Mock
+	private PasswordEncoder passwordEncoder;
+	
+	@InjectMocks
+	private InventoryControlService sut;
 	
 	@AfterAll
 	public static void tearDown() throws IOException {
@@ -68,28 +65,32 @@ public class InventoryControlServiceTest {
 		}
 	}
 	
-	//User
-	
 	@Test
-	public void Should_find_all_users_and_show_them_on_one_page() {
+	public void Should_get_a_page_of_users() {
 
 		//Arrange
-		int currentPageNumber = 0;
-		int pageSize = 30;
-		int numberOfAllUsers = 24;
+		Page<User> page = new PageImpl<>(Lists.newArrayList(new User(), new User(), new User()));
+		int pageIndex = 0;
+		int pageSize = page.getSize();
+		
+		when(userRepository.findAll(PageRequest.of(pageIndex, pageSize))).thenReturn(page);
 		
 		//Act
-		Page<User> result = sut.findAllUsers(currentPageNumber, pageSize);
+		Page<User> result = sut.findAllUsers(pageIndex, pageSize);
 		
 		//Assert
-		assertThat(result).size().isEqualTo(numberOfAllUsers);
+		assertThat(result).hasSize(pageSize);
 	}
-
+	
 	@Test
-	public void Should_find_a_user_by_given_id() {
+	public void Should_get_a_user_by_the_given_id() {
 		
 		//Arrange
-		int userId = 1;
+		User user = new User();
+		Integer userId = 1;
+		user.setId(userId);
+		
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 		
 		//Act
 		User result = sut.findUserById(userId);
@@ -97,126 +98,142 @@ public class InventoryControlServiceTest {
 		//Assert
 		assertThat(result.getId()).isEqualTo(userId);
 	}
-
+	
 	@Test
-	public void Should_find_a_user_by_given_username() {
+	public void When_trying_to_get_a_user_by_the_given_id_should_throw_NoSuchElementException() {
 		
 		//Arrange
+		Integer userId = 999;
+		String message = "User with id '" + userId + "' does not exist.";
+		
+		when(userRepository.findById(userId)).thenReturn(Optional.empty());
+		
+		//Assert
+		assertThrows(message, NoSuchElementException.class, () -> sut.findUserById(userId));
+	}
+
+	@Test
+	public void Should_get_a_user_by_the_given_username() {
+		
+		//Arrange
+		User user = new User();
 		String username = "jackobrien";
+		user.setUsername(username);
+		
+		when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 		
 		//Act
 		User result = sut.findUserByUsername(username);
 		
 		//Assert
-		assertThat(result.getUsername()).isEqualTo("jackobrien");
+		assertThat(result.getUsername()).isEqualTo(username);
 	}
-
+	
 	@Test
-	@Transactional
-	public void Should_insert_a_new_user() {
+	public void When_trying_to_get_a_user_by_the_given_username_should_throw_NoSuchElementException() {
+		
+		//Arrange
+		User user = new User();
+		String username = "jackobrien";
+		user.setUsername(username);
+		
+		when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+		
+		//Act
+		User result = sut.findUserByUsername(username);
+		
+		//Assert
+		assertThat(result.getUsername()).isEqualTo(username);
+	}
+	
+	@Test
+	public void Should_save_the_given_user() {
 		
 		//Arrange
 		User user = new User();
 		
-		user.setUsername("nolanrobertson");
-		user.setEnabled(Enabled.YES.getValue());
-		user.setAuthority(Authority.ROLE_USER.getName());
-		user.setFirstName("Nolan");
-		user.setLastName("Roberston");
-		user.setDepartment(Department.PLANT_ENGINEERING.getName());
-		user.setPosition(Position.ENGINEER.getName());
-		user.setPhone("+353 1 325 0707");
-		user.setEmail("nolanrobertson@amics.com");
+		ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+		
+		String encodedPassword = "$2a$10$H.W3HhF8pd2Y/TLfDM.t2uQ0F3yI9el9F8nio6VUijbq.SAg/5Ocq";
+		when(passwordEncoder.encode("123")).thenReturn(encodedPassword);
 		
 		//Act
 		sut.saveUser(user);
 		
 		//Assert
-		assertThat(user.getId()).isNotEqualTo(0);
+		verify(userRepository).save(captor.capture());
+		assertThat(user).isEqualTo(captor.getValue());
+		assertThat(user.getPassword()).isEqualTo(encodedPassword);
 	}
 
 	@Test
-	@Transactional
-	public void Should_update_a_user() {
+	public void Should_delete_a_user_by_the_given_id() {
 		
 		//Arrange
-		User user = sut.findUserById(1);
+		User user = new User();
+		Integer userId = 1;
+		user.setId(userId);
 		
-		String oldPhone = user.getPhone();
-		String newPhone = oldPhone + "777";
-		user.setPhone(newPhone);
-
-		//Act
-		sut.saveUser(user);
-
-		//Assert
-		assertThat(sut.findUserById(1).getPhone()).isEqualTo(newPhone);
-	}
-
-	@Test
-	@Transactional
-	public void Should_delete_a_user_by_given_id() {
+		InventoryCard card1 = new InventoryCard();
+		card1.setUser(user);
+		InventoryCard card2 = new InventoryCard();
+		card2.setUser(user);
 		
-		//Arrange
-		int userId = 4;
-		InventoryCard inventoryCard = sut.findInventoryCardById(1);
+		List<InventoryCard> inventoryCards = Lists.newArrayList(card1, card2);
+		
+		when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+		when(inventoryCardRepository.findAllByUser(user)).thenReturn(inventoryCards);
+		
+		ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
 		
 		//Act
 		sut.deleteUserById(userId);
 
 		//Assert
-		assertThrows(NoSuchElementException.class, () -> sut.findUserById(userId));
-		assertThat(inventoryCard.getUser()).isNull();
+		assertThat(inventoryCards.stream().allMatch(card -> card.getUser() == null));
+		verify(userRepository).deleteById(captor.capture());
+		assertThat(userId).isEqualTo(captor.getValue());
 	}
 	
-	//Inventory card
-
 	@Test
-	public void Should_find_all_inventory_cards_and_show_them_on_one_page() {
+	public void Should_get_a_page_of_inventory_cards() {
 		
 		//Arrange
-		int currentPageNumber = 0;
-		int pageSize = 30;
-		int numberOfAllInventoryCards = 20;
+		Page<InventoryCard> page = new PageImpl<>(Lists.newArrayList(new InventoryCard(), new InventoryCard(), new InventoryCard()));
+		int pageIndex = 0;
+		int pageSize = page.getSize();
+		
+		when(inventoryCardRepository.findAll(PageRequest.of(pageIndex, pageSize))).thenReturn(page);
 		
 		//Act
-		Page<InventoryCard> result = sut.findAllInventoryCards(currentPageNumber, pageSize);
+		Page<InventoryCard> result = sut.findAllInventoryCards(pageIndex, pageSize);
 		
 		//Assert
-		assertThat(result).size().isEqualTo(numberOfAllInventoryCards);
+		assertThat(result).hasSize(pageSize);
 	}
-
+	
 	@Test
-	public void Should_find_an_inventory_card_by_given_id() {
+	public void Should_get_an_inventory_card_by_the_given_id() {
 		
 		//Arrange
-		int inventoryCardId = 1;
+		InventoryCard inventoryCard = new InventoryCard();
+		Integer inventoryCardId = 1;
+		inventoryCard.setId(inventoryCardId);
+		
+		when(inventoryCardRepository.findById(inventoryCardId)).thenReturn(Optional.of(inventoryCard));
 		
 		//Act
 		InventoryCard result = sut.findInventoryCardById(inventoryCardId);
 		
 		//Assert
-		assertThat(result.getId()).isEqualTo(1);
+		assertThat(result.getId()).isEqualTo(inventoryCardId);
 	}
-
+	
 	@Test
-	@Transactional
-	public void Should_insert_a_new_inventory_card() throws IOException {
+	public void Should_save_the_given_inventory_card() throws IOException {
 		
 		//Arrange
 		InventoryCard inventoryCard = new InventoryCard();
-		
-		inventoryCard.setClassName(InventoryCardClass.ELECTRICAL.getName());
-		inventoryCard.setProductId("GV2ME02");
-		inventoryCard.setProductName("Motor circuit breaker");
-		inventoryCard.setProductType("GV2ME02");
-		inventoryCard.setProductManufacturer("Schneider Electric");
-		inventoryCard.setProductCountry("France");
-		inventoryCard.setProductLength("78.5 mm");
-		inventoryCard.setProductWidth("45 mm");
-		inventoryCard.setProductHeight("89 mm");
-		inventoryCard.setProductWeight("0.26 kg");
-		inventoryCard.setProductDescription("Rated current: 0.16 A");
 		
 		Path filePath = Paths.get("./src/test/resources/images/GV2ME02.png");
 		
@@ -234,27 +251,38 @@ public class InventoryControlServiceTest {
 			}
 		};
 		
+		User user = new User();
+		String username = "jackobrien";
+		user.setUsername(username);
+		
+		when(inventoryCardRepository.existsByIdentifier(any(String.class))).thenReturn(false);
+		when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+		
 		//Act
 		sut.saveInventoryCard(inventoryCard, multipartFile, imageSrc, principal);
 		
 		//Assert
-		assertThat(inventoryCard.getId()).isNotEqualTo(0);
-		assertThat(inventoryCard.getUser().getUsername()).isEqualTo("jackobrien");
+		assertThat(inventoryCard.getIdentifier()).isNotNull();
+		assertThat(inventoryCard.getUser().getUsername()).isEqualTo(username);
 	}
 	
 	@Test
-	@Transactional
-	public void Should_delete_an_inventory_card_by_given_id() throws IOException {
+	public void Should_delete_an_inventory_card_by_the_given_id() throws IOException {
 		
 		//Arrange
-		int inventoryCardId = 1;
-		String productImageFolder = sut.findInventoryCardById(inventoryCardId).getIdentifier();
-
+		InventoryCard inventoryCard = new InventoryCard();
+		Integer inventoryCardId = 1;
+		String folderName = "";	
+		ArgumentCaptor<Integer> captor = ArgumentCaptor.forClass(Integer.class);
+		
+		when(inventoryCardRepository.findById(inventoryCardId)).thenReturn(Optional.of(inventoryCard));
+		
 		//Act
-		sut.deleteInventoryCardById(inventoryCardId, productImageFolder);
+		sut.deleteInventoryCardById(inventoryCardId, folderName);
 
 		//Assert
-		assertThrows(NoSuchElementException.class, () -> sut.findInventoryCardById(inventoryCardId));
+		verify(inventoryCardRepository).deleteById(captor.capture());
+		assertThat(inventoryCardId).isEqualTo(captor.getValue());
 	}
 		
 }
