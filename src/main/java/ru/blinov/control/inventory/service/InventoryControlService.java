@@ -3,7 +3,7 @@ package ru.blinov.control.inventory.service;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -39,8 +39,6 @@ public class InventoryControlService {
 		this.inventoryCardRepository = inventoryCardRepository;
 		this.passwordEncoder = passwordEncoder;
 	}
-
-	//User
 	
 	@Transactional(readOnly = true)
 	@Cacheable(value = "users")
@@ -49,18 +47,18 @@ public class InventoryControlService {
 	}
 
 	@Transactional(readOnly = true)
-	public User findUserById(int id) {
-		
-		Optional<User> user = userRepository.findById(id);
-
-		return user.get();
+	public User findUserById(Integer id) {
+		return userRepository.findById(id)
+				.orElseThrow(() -> new NoSuchElementException("User with id '" + id + "' does not exist."));
 	}
 	
 	@Transactional(readOnly = true)
 	public User findUserByUsername(String username) {
-		return userRepository.findByUsername(username);
+		return userRepository.findByUsername(username)
+				.orElseThrow(() -> new NoSuchElementException("User with username '" + username + "' does not exist."));
 	}
 	
+	@Transactional
 	@CacheEvict(value = "users", allEntries = true)
 	public void saveUser(User user) {
 		
@@ -71,7 +69,7 @@ public class InventoryControlService {
 	
 	@Transactional
 	@CacheEvict(value = "users", allEntries = true)
-	public void deleteUserById(int id) {
+	public void deleteUserById(Integer id) {
 		
 		deleteInventoryCardUser(id);
 		
@@ -84,10 +82,8 @@ public class InventoryControlService {
 		
 		List<InventoryCard> inventoryCards = inventoryCardRepository.findAllByUser(user);
 		
-		inventoryCards.stream().forEach(inventoryCard -> inventoryCard.setUser(null));
+		inventoryCards.forEach(inventoryCard -> inventoryCard.setUser(null));
 	}
-	
-	//Inventory card
 	
 	@Transactional(readOnly = true)
 	@Cacheable(value = "inventoryCards")
@@ -97,10 +93,8 @@ public class InventoryControlService {
 	
 	@Transactional(readOnly = true)
 	public InventoryCard findInventoryCardById(int id) {
-		
-		Optional<InventoryCard> inventoryCard = inventoryCardRepository.findById(id);
-		
-		return inventoryCard.get();
+		return inventoryCardRepository.findById(id)
+				.orElseThrow(() -> new NoSuchElementException("Inventory card with id '" + id + "' does not exist"));
 	}
 	
 	@Transactional
@@ -138,13 +132,16 @@ public class InventoryControlService {
 	
 	private void setInventoryCardUser(InventoryCard inventoryCard, Principal principal) {
 
-		User user = userRepository.findByUsername(principal.getName());
+		User user = findUserByUsername(principal.getName());
 		
 		inventoryCard.setUser(user);
 	}
-
+	
+	@Transactional
 	@CacheEvict(value = "inventoryCards", allEntries = true)
 	public void deleteInventoryCardById(int id, String folderName) {
+		
+		findInventoryCardById(id);
 		
 		InventoryFileHandler.deleteProductImageFromDirectory(folderName);
 		
